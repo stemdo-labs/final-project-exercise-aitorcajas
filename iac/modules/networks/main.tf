@@ -40,10 +40,46 @@ resource "azurerm_subnet" "subnet_cluster" {
   address_prefixes     = ["10.1.1.0/24"]
 }
 
+resource "azurerm_network_security_group" "nsg_vm" {
+  name                = var.nsg_vm_name
+  location            = var.location
+  resource_group_name = var.rg_name
+
+  security_rule {
+    name                       = "allow_ssh"
+    priority                   = 1001
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "22"
+    source_address_prefix      = "0.0.0.0/0"
+    destination_address_prefix = "*"
+  }
+}
+
+resource "azurerm_subnet_network_security_group_association" "example" {
+  subnet_id                 = azurerm_subnet.subnet_vm.id
+  network_security_group_id = azurerm_network_security_group.nsg_vm.id
+}
+
+resource "azurerm_public_ip" "pip" {
+  name                = var.pip_name
+  location            = var.location
+  resource_group_name = var.rg_name
+  allocation_method   = "Dynamic"
+}
+
+### OUTPUTS
+
 output "subnet_vm_id" {
   value = azurerm_subnet.subnet_vm.id
 }
 
 output "subnet_cluster_id" {
   value = azurerm_subnet.subnet_cluster.id
+}
+
+output "pip_id" {
+  value = azurerm_public_ip.pip.id
 }

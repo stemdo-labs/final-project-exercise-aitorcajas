@@ -9,7 +9,7 @@ terraform {
 
   backend "azurerm" {
     storage_account_name = "staacajasdvfinlab"
-    container_name       = "con-acajas"
+    container_name       = "tfstatecont"
     key                  = "terraform.tfstate"
     resource_group_name  = "rg-acajas-dvfinlab"
   }
@@ -31,6 +31,8 @@ module "networks" {
   peer_cluster_name   = var.peer_cluster_name
   subnet_cluster_name = var.subnet_cluster_name
   subnet_vm_name      = var.subnet_vm_name
+  nsg_vm_name         = var.nsg_vm_name
+  pip_name            = var.pip_name
 }
 
 module "vms" {
@@ -38,6 +40,11 @@ module "vms" {
   rg_name      = var.rg_name
   location     = var.location
   subnet_vm_id = module.networks.subnet_vm_id
+  pip_id       = module.networks.pip_id
+  nic_bd_name  = var.nic_bd_name
+  nic_dr_name  = var.nic_dr_name
+  vm_bd_name   = var.vm_bd_name
+  vm_dr_name   = var.vm_dr_name
   depends_on   = [module.networks]
 }
 
