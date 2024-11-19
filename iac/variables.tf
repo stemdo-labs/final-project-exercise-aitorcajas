@@ -59,3 +59,14 @@ variable "cr_name" {
   description = "Nombre del Container Registry"
   default = "acajascr"
 }
+
+variable "con_name" {
+  type = string
+  description = "Nombre del contenedor"
+  default = "con-acajas"
+}
+
+variable "sa_name" {
+  type = string
+  description = "Nombre de la cuenta de almacenamiento"
+}
