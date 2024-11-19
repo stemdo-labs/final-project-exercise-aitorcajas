@@ -29,3 +29,11 @@ variable "peer_vm_name" {
 variable "peer_cluster_name" {
 
 }
+
+variable "nsg_vm_name" {
+
+}
+
+variable "pip_name" {
+
+}

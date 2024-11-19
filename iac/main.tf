@@ -6,6 +6,13 @@ terraform {
     }
   }
   required_version = ">= 1.1.0"
+
+  backend "azurerm" {
+    storage_account_name = "staacajasdvfinlab"
+    container_name       = "tfstatecont"
+    key                  = "terraform.tfstate"
+    resource_group_name  = "rg-acajas-dvfinlab"
+  }
 }
 
 provider "azurerm" {
@@ -24,14 +31,21 @@ module "networks" {
   peer_cluster_name   = var.peer_cluster_name
   subnet_cluster_name = var.subnet_cluster_name
   subnet_vm_name      = var.subnet_vm_name
+  nsg_vm_name         = var.nsg_vm_name
+  pip_name            = var.pip_name
 }
 
 module "vms" {
-  source = "./modules/vms"
-  rg_name             = var.rg_name
-  location            = var.location
+  source       = "./modules/vms"
+  rg_name      = var.rg_name
+  location     = var.location
   subnet_vm_id = module.networks.subnet_vm_id
-  depends_on = [ module.networks ]
+  pip_id       = module.networks.pip_id
+  nic_bd_name  = var.nic_bd_name
+  nic_dr_name  = var.nic_dr_name
+  vm_bd_name   = var.vm_bd_name
+  vm_dr_name   = var.vm_dr_name
+  depends_on   = [module.networks]
 }
 
 resource "azurerm_kubernetes_cluster" "aks" {

@@ -1,0 +1,60 @@
+---
+- name: Configure VM1 as a GitHub Actions Runner
+  hosts: [azure_vms]
+  become: true
+  vars:
+    github_runner_version: "2.310.0"
+    github_repo_url: "https://github.com/stemdo-labs/final-project-exercise-aitorcajas"
+    github_runner_token: "BLKJ6VTL4YMD3CPPEHX2IOLHHTCUC"
+    runner_dir: "/home/{{ ansible_user }}/actions-runner"
+
+  tasks:
+    - name: Ensure required packages are installed
+      apt:
+        name:
+          - curl
+          - tar
+          - sudo
+        state: present
+        update_cache: yes
+
+    - name: Create directory for the GitHub runner
+      file:
+        path: "{{ runner_dir }}"
+        state: directory
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+
+    - name: Download GitHub Actions Runner
+      get_url:
+        url: "https://github.com/actions/runner/releases/download/v{{ github_runner_version }}/actions-runner-linux-x64-{{ github_runner_version }}.tar.gz"
+        dest: "{{ runner_dir }}/actions-runner-linux-x64.tar.gz"
+
+    - name: Extract GitHub Actions Runner
+      unarchive:
+        src: "{{ runner_dir }}/actions-runner-linux-x64.tar.gz"
+        dest: "{{ runner_dir }}"
+        remote_src: yes
+
+    - name: Configure GitHub Actions Runner
+      command: >
+        ./config.sh
+        --url {{ github_repo_url }}
+        --token {{ github_runner_token }}
+      args:
+        chdir: "{{ runner_dir }}"
+      register: config_output
+
+    - name: Ensure runner is registered successfully
+      debug:
+        var: config_output.stdout
+
+    - name: Install runner as a service
+      command: ./svc.sh install
+      args:
+        chdir: "{{ runner_dir }}"
+
+    - name: Start GitHub Actions runner service
+      command: ./svc.sh start
+      args:
+        chdir: "{{ runner_dir }}"
