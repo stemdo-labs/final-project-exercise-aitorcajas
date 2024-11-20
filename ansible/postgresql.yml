@@ -28,13 +28,24 @@
         state: started
         enabled: true
 
-    - name: Configurar autenticación de contraseña en PostgreSQL
+    - name: Configurar autenticación de contraseña en PostgreSQL para IPv4
       lineinfile:
         path: /etc/postgresql/14/main/pg_hba.conf
         regexp: '^host\s+all\s+all\s+127\.0\.0\.1/32\s+'
         line: 'host    all             all             127.0.0.1/32            md5'
         state: present
-      notify: Reiniciar PostgreSQL
+
+    - name: Configurar autenticación de contraseña en PostgreSQL para sockets locales
+      lineinfile:
+        path: /etc/postgresql/14/main/pg_hba.conf
+        regexp: '^local\s+all\s+postgres\s+'
+        line: 'local   all             postgres                                md5'
+        state: present
+      
+    - name: Reiniciar PostgreSQL para aplicar los cambios
+      service:
+        name: postgresql
+        state: restarted
 
     - name: Crear usuario PostgreSQL
       become: true
@@ -52,13 +63,3 @@
         owner: "{{ postgres_user }}"
         encoding: "UTF8"
         state: present
-
-  handlers:
-    - name: Reiniciar PostgreSQL
-      service:
-        name: postgresql
-        state: restarted
-    
-    - name: Verificar si se ejecutó el handler
-      debug:
-        msg: "El handler 'reiniciar servicio' se ha ejecutado."
