@@ -28,6 +28,14 @@
         state: started
         enabled: true
 
+    - name: Configurar autenticación de contraseña en PostgreSQL
+      lineinfile:
+        path: /etc/postgresql/14/main/pg_hba.conf
+        regexp: '^host\s+all\s+all\s+127\.0\.0\.1/32\s+'
+        line: 'host    all             all             127.0.0.1/32            md5'
+        state: present
+      notify: Reiniciar PostgreSQL
+
     - name: Crear usuario PostgreSQL
       become: true
       become_user: postgres
@@ -44,14 +52,6 @@
         owner: "{{ postgres_user }}"
         encoding: "UTF8"
         state: present
-
-    - name: Configurar autenticación de contraseña en PostgreSQL
-      lineinfile:
-        path: /etc/postgresql/14/main/pg_hba.conf
-        regexp: '^host\s+all\s+all\s+127\.0\.0\.1/32\s+'
-        line: 'host    all             all             127.0.0.1/32            md5'
-        state: present
-      notify: Reiniciar PostgreSQL
 
   handlers:
     - name: Reiniciar PostgreSQL
