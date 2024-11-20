@@ -67,20 +67,21 @@ jobs:
   - name: Set up Node.js
     uses: actions/setup-node@v4
     with:
-      node-version: '20'
+        node-version: '20'
 
   - uses: actions/checkout@v3
 
-  - name: Setup Terraform
-    uses: hashicorp/setup-terraform@v2
+  - name: 'Terraform Init'
+    uses: hashicorp/terraform-github-actions@master
     with:
-      terraform_version: ${{ env.TF_VERSION }}
+     tf_actions_version: ${{ env.TF_VERSION }}
+     tf_actions_subcommand: 'init'
+     tf_actions_working_dir: "./iac"
 
-  - name: Initialize Terraform
-    run: terraform init
-    working-directory: ./iac
-    
-  - name: Terraform Apply
-    run: | 
-     terraform apply -auto-approve
-    working-directory: ./iac
+  - name: 'Terraform Apply'
+    uses: hashicorp/terraform-github-actions@master
+    with:
+     tf_actions_version: ${{ env.TF_VERSION }}
+     tf_actions_subcommand: 'apply'
+     tf_actions_working_dir: "./iac"
+     tf_actions_auto_approve: true
