@@ -30,4 +30,4 @@ jobs:
     - name: Ejecutar playbook PostgreSQL
       run: |
         cd ansible
-        ansible-playbook postgresql.yml
+        ansible-playbook -i inventory.ini postgresql.yml
