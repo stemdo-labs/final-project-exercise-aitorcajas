@@ -26,13 +26,18 @@
         state: started
         enabled: true
 
+    # - name: Crear un usuario en PostgreSQL
+    #   become_user: postgres
+    #   postgresql_user:
+    #     name: "{{ postgres_user }}"
+    #     password: "{{ postgres_password }}"
+    #     encrypted: yes
+    #     state: present
+
     - name: Crear un usuario en PostgreSQL
       become_user: postgres
-      postgresql_user:
-        name: "{{ postgres_user }}"
-        password: "{{ postgres_password }}"
-        encrypted: yes
-        state: present
+      shell: |
+        psql -c "CREATE USER {{ postgres_user }} WITH PASSWORD '{{ postgres_password }}';"
 
     - name: Crear una base de datos
       become_user: postgres
