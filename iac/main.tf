@@ -25,6 +25,7 @@ module "networks" {
   source              = "./modules/networks"
   rg_name             = var.rg_name
   location            = var.location
+  location_cluster    = var.location_cluster
   vnet_vm_name        = var.vnet_vm_name
   vnet_cluster_name   = var.vnet_cluster_name
   peer_vm_name        = var.peer_vm_name
@@ -48,23 +49,23 @@ module "vms" {
   depends_on   = [module.networks]
 }
 
-resource "azurerm_kubernetes_cluster" "aks" {
-  name                = var.cluster_name
-  location            = var.location
-  resource_group_name = var.rg_name
-  dns_prefix          = var.dns_cluster_prefix
+# resource "azurerm_kubernetes_cluster" "aks" {
+#   name                = var.cluster_name
+#   location            = var.location_cluster
+#   resource_group_name = var.rg_name
+#   dns_prefix          = var.dns_cluster_prefix
 
-  default_node_pool {
-    name           = "default"
-    node_count     = 1
-    vm_size        = "Standard_B2s"
-    vnet_subnet_id = module.networks.subnet_cluster_id
-  }
+#   default_node_pool {
+#     name           = "default"
+#     node_count     = 1
+#     vm_size        = "Standard_B2s"
+#     vnet_subnet_id = module.networks.subnet_cluster_id
+#   }
 
-  identity {
-    type = "SystemAssigned"
-  }
-}
+#   identity {
+#     type = "SystemAssigned"
+#   }
+# }
 
 resource "azurerm_container_registry" "acajascr" {
   name                = var.cr_name

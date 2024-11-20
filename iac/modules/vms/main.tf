@@ -19,7 +19,7 @@ resource "azurerm_network_interface" "nic_dr" {
     name                          = "ip-configuration-dr"
     subnet_id                     = var.subnet_vm_id
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id = var.pip_id
+    public_ip_address_id          = var.pip_id
   }
 }
 
@@ -48,7 +48,7 @@ resource "azurerm_virtual_machine" "vm_bd" {
 
   os_profile {
     computer_name  = "hostname"
-    admin_username = "testadmin"
+    admin_username = "acajasbd"
     admin_password = "Password1234!"
   }
 
@@ -82,7 +82,7 @@ resource "azurerm_virtual_machine" "vm_dr" {
 
   os_profile {
     computer_name  = "hostname"
-    admin_username = "testadmin"
+    admin_username = "acajas"
     admin_password = "Password1234!"
   }
 
@@ -94,9 +94,7 @@ resource "azurerm_virtual_machine" "vm_dr" {
 resource "null_resource" "generate_inventory" {
   provisioner "local-exec" {
     command = <<EOT
-      echo '[dr]\n
-      vm-dr ansible_host=${azurerm_network_interface.nic_dr.ip_configuration[0].private_ip_address} ansible_user=testadmin ansible_ssh_pass=Password1234!' 
-      > ../ansible/inventory.ini
+      echo '[bd]\nvm-bd ansible_host=${azurerm_network_interface.nic_bd.ip_configuration[0].private_ip_address} ansible_user=acajasbd ansible_ssh_pass=Password1234!' > ../ansible/inventory.ini
     EOT
   }
 }
