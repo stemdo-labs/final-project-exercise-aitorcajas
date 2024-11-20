@@ -101,3 +101,8 @@ variable "vm_dr_name" {
   description = "Nombre de la máquina virtual para los backups"
   default = "vm-dr"
 }
+
+variable "location_cluster" {
+  type = string
+  description = "Localización para el cluster y su red"
+}

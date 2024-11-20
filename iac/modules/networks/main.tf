@@ -7,7 +7,7 @@ resource "azurerm_virtual_network" "vnet_vm" {
 
 resource "azurerm_virtual_network" "vnet_cluster" {
   name                = var.vnet_cluster_name
-  location            = var.location
+  location            = var.location_cluster
   resource_group_name = var.rg_name
   address_space       = ["10.1.0.0/16"]
 }
@@ -58,7 +58,7 @@ resource "azurerm_network_security_group" "nsg_vm" {
   }
 }
 
-resource "azurerm_subnet_network_security_group_association" "example" {
+resource "azurerm_subnet_network_security_group_association" "nsga" {
   subnet_id                 = azurerm_subnet.subnet_vm.id
   network_security_group_id = azurerm_network_security_group.nsg_vm.id
 }

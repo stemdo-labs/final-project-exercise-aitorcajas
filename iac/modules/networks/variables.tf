@@ -37,3 +37,7 @@ variable "nsg_vm_name" {
 variable "pip_name" {
 
 }
+
+variable "location_cluster" {
+  
+}
