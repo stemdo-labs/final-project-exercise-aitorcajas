@@ -25,22 +25,27 @@ jobs:
   if: github.event_name == 'pull_request'
   runs-on: ubuntu-latest
   steps:
+  - name: Set up Node.js
+    uses: actions/setup-node@v4
+    with:
+        node-version: '20'
+
   - uses: actions/checkout@v3
 
-  - name: Setup Terraform
-    uses: hashicorp/setup-terraform@v2
+  - name: 'Terraform Init'
+    uses: hashicorp/terraform-github-actions@master
     with:
-      terraform_version: ${{ env.TF_VERSION }}
+      tf_actions_version: ${{ env.TF_VERSION }}
+      tf_actions_subcommand: 'init'
+      tf_actions_working_dir: "./iac"
 
-  - name: Initialize Terraform
-    run: terraform init
-    working-directory: ./iac
-    
-  - name: Terraform Plan
+  - name: 'Terraform Plan'
     id: tf_plan
-    run: | 
-     terraform plan
-    working-directory: ./iac
+    uses: hashicorp/terraform-github-actions@master
+    with:
+      tf_actions_version: ${{ env.TF_VERSION }}
+      tf_actions_subcommand: 'plan'
+      tf_actions_working_dir: "./iac"
 
   - name: 'Comentar resultado del Terraform Plan'
     if: github.event_name == 'pull_request'
