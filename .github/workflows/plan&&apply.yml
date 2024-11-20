@@ -90,4 +90,11 @@ jobs:
     run: |
       cd ansible
       ls
-## commit de prueba
+
+  - name: Agregar y hacer commit del archivo al repositorio
+    run: |
+      git config --global user.name "aitorcajas"
+      git config --global user.email "acajas@stemdo.io"
+      git add ./ansible/inventory.ini
+      git commit -m "Generar y agregar archivo inventory.ini al repositorio"
+      git push
