@@ -1,0 +1,56 @@
+---
+- name: Configuración de PostgreSQL
+  hosts: all
+  become: true
+
+  vars:
+    postgres_user: acajas
+    postgres_password: acajasbd
+    postgres_db: acajasbd
+
+  tasks:
+    - name: Actualizar el repositorio de paquetes
+      apt:
+        update_cache: yes
+
+    - name: Instalar PostgreSQL
+      apt:
+        name: 
+          - postgresql
+          - postgresql-contrib
+        state: present
+
+    - name: Asegurarse de que PostgreSQL está en ejecución
+      service:
+        name: postgresql
+        state: started
+        enabled: true
+
+    - name: Crear un usuario en PostgreSQL
+      become_user: postgres
+      postgresql_user:
+        name: "{{ postgres_user }}"
+        password: "{{ postgres_password }}"
+        state: present
+
+    - name: Crear una base de datos
+      become_user: postgres
+      postgresql_db:
+        name: "{{ postgres_db }}"
+        owner: "{{ postgres_user }}"
+        encoding: "UTF8"
+        state: present
+
+    - name: Configurar autenticación de contraseña en PostgreSQL
+      lineinfile:
+        path: /etc/postgresql/14/main/pg_hba.conf
+        regexp: '^host\s+all\s+all\s+127\.0\.0\.1/32\s+'
+        line: 'host    all             all             127.0.0.1/32            md5'
+        state: present
+      notify: Reiniciar PostgreSQL
+
+  handlers:
+    - name: Reiniciar PostgreSQL
+      service:
+        name: postgresql
+        state: restarted

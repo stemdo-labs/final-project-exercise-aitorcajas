@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     
 jobs:
-  test:
+  ansible:
     runs-on: self-hosted
     steps:
       - name: Set up Python
@@ -19,3 +19,15 @@ jobs:
 
       - name: Verify Ansible Installation
         run: ansible --version
+
+  postgresql:
+    needs: ansible
+    runs-on: self-hosted
+    steps:
+    - name: Checkout del repositorio
+      uses: actions/checkout@v3
+
+    - name: Ejecutar playbook PostgreSQL
+      run: |
+        cd ansible
+        ansible-playbook postgresql.yml
