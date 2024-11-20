@@ -19,15 +19,11 @@ jobs:
 
       - name: Verify Ansible Installation
         run: ansible --version
+      
+      - name: Checkout del repositorio
+        uses: actions/checkout@v3
 
-  postgresql:
-    needs: ansible
-    runs-on: self-hosted
-    steps:
-    - name: Checkout del repositorio
-      uses: actions/checkout@v3
-
-    - name: Ejecutar playbook PostgreSQL
-      run: |
-        cd ansible
-        ansible-playbook -i inventory.ini postgresql.yml
+      - name: Ejecutar playbook PostgreSQL
+        run: |
+          cd ansible
+          ansible-playbook -i inventory.ini postgresql.yml
