@@ -25,11 +25,6 @@ jobs:
   if: github.event_name == 'pull_request'
   runs-on: ubuntu-latest
   steps:
-  - name: Set up Node.js
-    uses: actions/setup-node@v4
-    with:
-        node-version: '20'
-
   - uses: actions/checkout@v3
 
   - name: Setup Terraform
@@ -44,7 +39,7 @@ jobs:
   - name: Terraform Plan
     id: tf_plan
     run: | 
-     terraform plan -auto-approve
+     terraform plan
     working-directory: ./iac
 
   - name: 'Comentar resultado del Terraform Plan'
