@@ -17,7 +17,7 @@ env:
 
 permissions: 
   pull-requests: write
-  contents: read
+  contents: write
   issues: write
 
 jobs:
@@ -97,4 +97,3 @@ jobs:
       git config --global user.email "acajas@stemdo.io"
       git add ./ansible/inventory.ini
       git commit -m "Generar y agregar archivo inventory.ini al repositorio"
-      git push
