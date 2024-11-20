@@ -58,3 +58,7 @@
       service:
         name: postgresql
         state: restarted
+    
+    - name: Verificar si se ejecutó el handler
+      debug:
+        msg: "El handler 'reiniciar servicio' se ha ejecutado."
