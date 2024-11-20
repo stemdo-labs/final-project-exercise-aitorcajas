@@ -74,5 +74,3 @@ resource "azurerm_container_registry" "acajascr" {
   sku                 = "Premium"
   admin_enabled       = false
 }
-
-## commit de prueba
