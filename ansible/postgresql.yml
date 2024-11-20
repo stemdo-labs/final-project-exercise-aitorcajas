@@ -34,10 +34,22 @@
     #     encrypted: yes
     #     state: present
 
+    # - name: Crear un usuario en PostgreSQL
+    #   become_user: postgres
+    #   shell: |
+    #     psql -c "CREATE USER {{ postgres_user }} WITH PASSWORD '{{ postgres_password }}';"
+
     - name: Crear un usuario en PostgreSQL
       become_user: postgres
-      shell: |
-        psql -c "CREATE USER {{ postgres_user }} WITH PASSWORD '{{ postgres_password }}';"
+      command: >
+        psql -c "DO
+        $$
+        BEGIN
+          IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = '{{ postgres_user }}') THEN
+            CREATE ROLE {{ postgres_user }} WITH LOGIN PASSWORD '{{ postgres_password }}';
+          END IF;
+        END
+        $$;"
 
     - name: Crear una base de datos
       become_user: postgres
