@@ -28,21 +28,6 @@
         state: started
         enabled: true
 
-    - name: Configurar pg_hba.conf para usar md5 en lugar de peer
-      copy:
-        dest: /etc/postgresql/12/main/pg_hba.conf
-        content: |
-          local   all             postgres                                md5
-          local   all             all                                     md5
-          host    all             all             127.0.0.1/32            md5
-          host    all             all             ::1/128                 md5
-      notify: Reiniciar PostgreSQL
-
-    - name: Reiniciar PostgreSQL
-      systemd:
-        name: postgresql
-        state: restarted
-
     - name: Crear usuario PostgreSQL
       become: true
       become_user: postgres
