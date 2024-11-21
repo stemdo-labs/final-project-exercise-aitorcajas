@@ -9,20 +9,26 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Configurar Python
-        uses: actions/setup-python@v4
-        # with:
-        #   python-version: '3.10'
+      # - name: Configurar Python
+      #   uses: actions/setup-python@v4
+      #   # with:
+      #   #   python-version: '3.10'
 
-      - name: Instalar dependencias
+      # - name: Instalar dependencias
+      #   run: |
+      #     sudo apt-get update
+      #     sudo apt-get install -y python3-pip
+      #     python3 -m pip install --upgrade pip
+
+      - name: Instalar pipx
         run: |
-          sudo apt-get update
-          sudo apt-get install -y python3-pip
-          python3 -m pip install --upgrade pip
+          sudo apt update
+          sudo apt install pipx
+          pipx ensurepath
 
       - name: Instalar Ansible
         run: |
-          python3 -m pip install ansible
+          pipx install --include-deps ansible
 
       - name: Verify Ansible Installation
         run: ansible --version
