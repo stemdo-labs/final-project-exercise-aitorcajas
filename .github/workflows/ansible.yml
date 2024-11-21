@@ -38,6 +38,7 @@ jobs:
       - name: Ejecutar playbook para instalar python y dependencias
         run:  |
           cd ansible
+          ls
           ansible-playbook -i inventory.ini python.yml
 
       - name: Ejecutar playbook para hacer el backup
