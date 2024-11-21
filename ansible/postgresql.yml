@@ -4,7 +4,7 @@
   become: true
 
   vars:
-    postgres_user: acajas
+    postgres_user: acajasbd
     postgres_db: acajasbd
     postgres_password: password
 
