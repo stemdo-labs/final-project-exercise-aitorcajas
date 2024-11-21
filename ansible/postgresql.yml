@@ -6,6 +6,7 @@
   vars:
     postgres_user: acajas
     postgres_db: acajasbd
+    postgres_password: password
 
   tasks:
     - name: Actualizar el repositorio de paquetes
@@ -49,3 +50,9 @@
       become_user: postgres
       shell: |
         psql -c "ALTER DATABASE {{ postgres_db }} OWNER TO {{ postgres_user }};"
+
+    - name: Configurar la contraseña del usuario PostgreSQL
+      become: true
+      become_user: postgres
+      shell: |
+        psql -c "ALTER USER {{ postgres_user }} WITH PASSWORD '{{ postgres_password }}';"
