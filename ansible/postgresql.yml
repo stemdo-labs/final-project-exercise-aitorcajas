@@ -47,6 +47,7 @@
       become_user: postgres
       become: true
       shell: |
+        sudo -i -u postgres
         psql -c "ALTER USER postgres PASSWORD '{{ postgres_password }}';"
       args:
         executable: /bin/bash
