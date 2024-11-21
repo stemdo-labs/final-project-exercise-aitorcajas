@@ -46,7 +46,10 @@
     - name: Configurar contraseña para el usuario postgres
       become_user: postgres
       become: true
-      shell: psql -c "ALTER USER postgres PASSWORD '{{ postgres_user_pass }}';"
+      shell: |
+        psql -c "ALTER USER postgres PASSWORD '{{ postgres_password }}';"
+      args:
+        executable: /bin/bash
       
     - name: Reiniciar PostgreSQL para aplicar los cambios
       service:
