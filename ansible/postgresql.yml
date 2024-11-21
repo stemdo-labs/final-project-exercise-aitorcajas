@@ -62,7 +62,7 @@
       become_user: postgres
       postgresql_user:
         name: "{{ postgres_user }}"
-        password: '"{{ postgres_password }}"'
+        # password: '"{{ postgres_password }}"'
         role_attr_flags: SUPERUSER
         state: present
 
