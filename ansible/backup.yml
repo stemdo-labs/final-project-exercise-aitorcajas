@@ -51,7 +51,6 @@
         src: "{{ backup_file }}"
         dest: "{{ local_backup_path }}"
         flat: yes
-      delegate_to: localhost
 
     - name: Iniciar sesión en Azure CLI con Service Principal
       shell: |
