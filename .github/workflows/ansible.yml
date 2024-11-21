@@ -34,6 +34,7 @@ jobs:
           ansible-playbook -i inventory.ini postgresql.yml
 
   backup:
+    needs: ansible
     runs-on: self-hosted
     steps:
       - name: Checkout del repositorio
