@@ -1,4 +1,4 @@
-name: Insatalar a PostgreSQL en la máquina de la BD
+name: Instalar a PostgreSQL en la máquina de la BD
 
 on:
   workflow_dispatch:
@@ -14,12 +14,11 @@ jobs:
         # with:
         #   python-version: '3.10'
 
-      - name: Instalar Ansible y dependencias
+      - name: Instalar dependencias
         run: |
           sudo apt-get update
           sudo apt-get install -y python3-pip
           python3 -m pip install --upgrade pip
-          pip install ansible
 
       - name: Instalar Ansible
         run: |
