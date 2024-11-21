@@ -24,10 +24,15 @@
         state: present
 
     - name: Realizar dump de la base de datos PostgreSQL y cifrar el archivo
-      shell: |
-        pg_dump -U {{ postgres_user }} {{ postgres_db }} | gzip | openssl enc -aes-256-cbc -salt -out {{ backup_file }} -k "{{ encryption_key }}"
-      args:
-        creates: "{{ backup_file }}"
+      become: true
+      cron:
+        name: "Backup diario de la base de datos"
+        minute: "32"
+        hour: "12"
+        job: |
+          pg_dump -U {{ postgres_user }} {{ postgres_db }} | gzip | openssl enc -aes-256-cbc -salt -out {{ backup_file }} -k "{{ encryption_key }}"
+        state: 
+          present
 
     - name: Verificar si el archivo de backup fue creado y cifrado
       stat:
