@@ -25,26 +25,20 @@
         state: present
 
     - name: Realizar dump de la base de datos PostgreSQL y cifrar el archivo
-      become: true
-      cron:
-        name: "Backup diario de la base de datos"
-        minute: "05"
-        hour: "13"
-        job: |
-          pg_dump -U {{ postgres_user }} {{ postgres_db }} | gzip | openssl enc -aes-256-cbc -salt -out {{ backup_file }} -k "{{ encryption_key }}"
-        state: 
-          present
+      shell: |
+        pg_dump -U {{ postgres_user }} {{ postgres_db }} | gzip | openssl enc -aes-256-cbc -salt -out {{ backup_file }} -k "{{ encryption_key }}"
+      args:
+        creates: "{{ backup_file }}"
 
     - name: Verificar si el archivo de backup fue creado y cifrado
       stat:
         path: "{{ backup_file }}"
       register: backup_stat
-      failed_when: false
 
-    # - name: Comprobar si el backup fue exitoso
-    #   fail:
-    #     msg: "El archivo de backup no se creó correctamente."
-    #   when: not backup_stat.stat.exists
+    - name: Comprobar si el backup fue exitoso
+      fail:
+        msg: "El archivo de backup no se creó correctamente."
+      when: not backup_stat.stat.exists
 
     - name: Fetch del archivo de backup a la máquina local
       fetch:
