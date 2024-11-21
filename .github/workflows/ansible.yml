@@ -1,4 +1,4 @@
-name: Insatalar a PostgreSQL en la máquina de la BD
+name: Instalar a PostgreSQL en la máquina de la BD
 
 on:
   workflow_dispatch:
@@ -7,15 +7,12 @@ jobs:
   ansible:
     runs-on: self-hosted
     steps:
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
-
-      - name: Install Ansible
+      - uses: actions/checkout@v3
+      
+      - name: Instalar Ansible
         run: |
-          python -m pip install --upgrade pip
-          pip install ansible
+          sudo apt-get update
+          sudo apt-get install -y ansible
 
       - name: Verify Ansible Installation
         run: ansible --version
@@ -24,11 +21,17 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y sshpass
-      
-      - name: Checkout del repositorio
-        uses: actions/checkout@v3
 
-      - name: Ejecutar playbook PostgreSQL
-        run: |
+      - name: Ejecutar playbook para instalar PostgreSQL
+        run:  |
           cd ansible
           ansible-playbook -i inventory.ini postgresql.yml
+
+      - name: Ejecutar playbook para hacer el backup
+        run: |
+          cd ansible
+          ansible-playbook -i inventory.ini backup.yml
+        env:
+          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
