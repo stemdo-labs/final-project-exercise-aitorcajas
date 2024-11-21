@@ -46,12 +46,12 @@
         msg: "El archivo de backup no se creó correctamente."
       when: not backup_stat.stat.exists
 
-    - name: Fetch del archivo de backup a la máquina local
-      fetch:
-        src: "{{ backup_file }}"
-        dest: "{{ local_backup_path }}"
-        flat: yes
-      delegate_to: localhost
+    # - name: Fetch del archivo de backup a la máquina local
+    #   fetch:
+    #     src: "{{ backup_file }}"
+    #     dest: "{{ local_backup_path }}"
+    #     flat: yes
+    #   delegate_to: localhost
 
     - name: Iniciar sesión en Azure CLI con Service Principal
       shell: |
