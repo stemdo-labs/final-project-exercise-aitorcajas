@@ -33,10 +33,14 @@ jobs:
           cd ansible
           ansible-playbook -i inventory.ini postgresql.yml
 
-      - name: Ejecutar playbook para hacer el backup
+      - name: Set up Python 3.9 and dependencies
         run: |
-          cd ansible
-          ansible-playbook -i inventory.ini backup.yml
+          sudo apt-get update
+          sudo apt-get install -y python3.9 python3.9-dev python3.9-venv
+          sudo apt-get install -y libpython3.9 libpython3.9-dev
+
+      - name: Ejecutar playbook para hacer el backup
+        run: ansible-playbook -i inventory.ini backup.yml
         env:
           AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
           AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
