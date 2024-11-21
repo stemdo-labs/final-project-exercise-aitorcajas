@@ -1,0 +1,45 @@
+---
+- name: Backup de base de datos PostgreSQL y subida a Azure Blob Storage
+  hosts: localhost
+  become: true
+  vars:
+    postgres_db: "acajasbd"
+    postgres_user: "acajasbd"
+    backup_file: "/tmp/{{ postgres_db }}-backup.sql.gz"
+    storage_account_name: "staacajasdvfinlab"
+    container_name: "backup"
+  
+  tasks:
+    - name: Realizar dump de la base de datos PostgreSQL y cifrar el archivo
+      shell: |
+        pg_dump -U {{ postgres_user }} {{ postgres_db }} | gzip | openssl enc -aes-256-cbc -salt -out {{ backup_file }} -k "mi_clave_de_cifrado"
+      args:
+        creates: "{{ backup_file }}"
+    
+    - name: Verificar si el archivo de backup fue creado y cifrado
+      stat:
+        path: "{{ backup_file }}"
+      register: backup_stat
+    
+    - name: Comprobar si el backup fue exitoso
+      fail:
+        msg: "El archivo de backup no se creó correctamente."
+      when: not backup_stat.stat.exists
+
+    - name: Iniciar sesión en Azure CLI con Service Principal
+      shell: |
+        az login --service-principal -u $ARM_CLIENT_ID -p $ARM_CLIENT_SECRET --tenant $ARM_TENANT_ID
+      register: azure_login_output
+      failed_when: "'ERROR' in azure_login_output.stdout"
+
+    - name: Subir el archivo de backup a Azure Blob Storage
+      shell: |
+        az storage blob upload --account-name {{ storage_account_name }} --container-name {{ container_name }} --file {{ backup_file }} --name "{{ postgres_db }}-backup-{{ ansible_date_time.iso8601 }}.sql.gz"
+      environment:
+        AZURE_STORAGE_ACCOUNT: "{{ storage_account_name }}"
+        AZURE_STORAGE_KEY: "$ARM_CLIENT_SECRET"
+
+    - name: Eliminar el archivo de backup local
+      file:
+        path: "{{ backup_file }}"
+        state: absent

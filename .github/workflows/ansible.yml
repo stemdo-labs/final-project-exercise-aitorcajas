@@ -28,7 +28,22 @@ jobs:
       - name: Checkout del repositorio
         uses: actions/checkout@v3
 
-      - name: Ejecutar playbook PostgreSQL
+      - name: Ejecutar playbook para instalar PostgreSQL
         run: |
           cd ansible
           ansible-playbook -i inventory.ini postgresql.yml
+
+  backup:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout del repositorio
+        uses: actions/checkout@v3
+
+      - name: Ejecutar playbook para hacer el backup
+        run: |
+          cd ansible
+          ansible-playbook -i inventory.ini backup.yml
+        env:
+          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
