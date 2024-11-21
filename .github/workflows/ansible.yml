@@ -36,7 +36,9 @@ jobs:
           ansible-playbook -i inventory.ini postgresql.yml
 
       - name: Ejecutar playbook para hacer el backup
-        run: ansible-playbook -i inventory.ini backup.yml
+        run: |
+          cd ansible
+          ansible-playbook -i inventory.ini backup.yml
         env:
           AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
           AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
