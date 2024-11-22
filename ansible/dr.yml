@@ -46,7 +46,6 @@
           --https-only \
           --output tsv
       register: sas_token_output
-      no_log: true
 
     - name: Descargar el backup desde Azure usando AzCopy
       shell: |
