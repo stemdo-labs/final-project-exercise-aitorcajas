@@ -49,7 +49,7 @@
 
     - name: Subir el archivo de backup a Azure Blob Storage
       shell: |
-        az storage blob upload --account-name {{ storage_account_name }} --container-name {{ container_name }} --file {{ backup_file }} --name "{{ postgres_db }}-backup-{{ ansible_date_time.iso8601 }}.sql.gz"
+        az storage blob upload --account-name {{ storage_account_name }} --container-name {{ container_name }} --file {{ backup_file }} --name "{{ postgres_db }}-backup.sql.gz"
       environment:
         AZURE_CLIENT_ID: "$AZURE_CLIENT_ID"
         AZURE_CLIENT_SECRET: "$AZURE_CLIENT_SECRET"
