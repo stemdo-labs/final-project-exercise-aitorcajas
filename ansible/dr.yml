@@ -39,7 +39,7 @@
 
     - name: Verifica la versión de Azure CLI
       ansible.builtin.debug:
-        msg: {{ azure_cli_version }}
+        msg: "{{ azure_cli_version }}"
 
     - name: Iniciar sesión en Azure CLI con Service Principal
       shell: |
