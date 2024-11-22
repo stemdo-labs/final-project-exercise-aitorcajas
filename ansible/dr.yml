@@ -1,6 +1,6 @@
 ---
 - name: Descargar y restaurar base de datos PostgreSQL desde copia de seguridad
-  hosts: db_server
+  hosts: [bd]
   become: yes
   vars:
     storage_account_name: "staacajasdvfinlab"
