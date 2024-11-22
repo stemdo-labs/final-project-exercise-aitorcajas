@@ -2,7 +2,7 @@ name: Backup diario
 
 on:
  schedule:
- - cron: '40 09 * * *'
+ - cron: '45 09 * * *'
 
 jobs:
  backup:
