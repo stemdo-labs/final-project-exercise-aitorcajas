@@ -29,6 +29,7 @@
       when: not backup_stat.stat.exists
 
     - name: Fetch del archivo de backup a la máquina local
+      become: true
       fetch:
         src: "{{ backup_file }}"
         dest: "{{ local_backup_path }}"
