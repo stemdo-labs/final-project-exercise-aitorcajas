@@ -9,7 +9,7 @@
     storage_account_name: "staacajasdvfinlab"
     container_name: "backup"
     encryption_key: "password"
-    local_backup_path: "/tmp/{{ postgres_db }}-backup-{{ ansible_date_time.iso8601 }}.sql.gz"
+    local_backup_path: "/backups/{{ postgres_db }}-backup-{{ ansible_date_time.iso8601 }}.sql.gz"
 
   tasks:
     - name: Realizar dump de la base de datos PostgreSQL y cifrar el archivo
