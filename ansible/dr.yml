@@ -9,62 +9,21 @@
     db_name: "acajasbd"
     db_user: "acajasbd"
     backup_path: "{{ db_name }}-backup.sql.gz"
-    sas_expiry: "2024-12-12T23:59:59Z"
+    rg_name: "rg-acajas-dvfinlab"
+    # sas_expiry: "2024-12-12T23:59:59Z"
     # db_password: "contraseña_bd"
 
   tasks:
-    - name: Instalar AzCopy en Ubuntu/Debian
-      apt:
-        name: wget
-        state: present
-      become: yes
-
-    - name: Descargar AzCopy
+    - name: Obtener la clave de la cuenta de almacenamiento de Azure
       shell: |
-        wget https://aka.ms/downloadazcopy-v10-linux -O /tmp/azcopy.tar.gz
-      become: yes
+        az storage account keys list --resource-group {{ resource_group }} --account-name {{ storage_account_name }} --query '[0].value' -o tsv
+      register: storage_account_key
+      changed_when: false
 
-    - name: Extraer AzCopy
+    - name: Descargar el backup desde Azure utilizando la clave de la cuenta
       shell: |
-        tar -xvzf /tmp/azcopy.tar.gz -C /usr/local/bin/
-      become: yes
-      when: ansible_facts['os_family'] == 'Debian'
-
-    - name: Instalar Azure CLI en Ubuntu/Debian
-      apt:
-        name: curl
-        state: present
-      become: yes
-
-    - name: Descargar e instalar Azure CLI en Ubuntu/Debian
-      shell: |
-        curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
-      become: yes
-      when: ansible_facts['os_family'] == 'Debian'
-
-    - name: Iniciar sesión en Azure CLI con Service Principal
-      shell: |
-        az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID
-      register: azure_login_output
-      failed_when: "'ERROR' in azure_login_output.stdout"
-
-    - name: Generar SAS Token para el contenedor de Azure
-      shell: |
-        az storage container generate-sas \
-          --account-name {{ storage_account_name }} \
-          --name {{ container_name }} \
-          --permissions rw \
-          --expiry {{ sas_expiry }} \
-          --https-only \
-          --output tsv
-      register: sas_token_output
-
-    - name: Descargar el backup desde Azure usando AzCopy
-      shell: |
-        azcopy copy "https://{{ storage_account_name }}.blob.core.windows.net/{{ container_name }}/{{ backup_path }}?{{ sas_token_output.stdout }}" "{{ backup_file }}" --recursive
+        az storage blob download --container-name {{ container_name }} --name {{ backup_path }} --file {{ backup_file }} --account-name {{ storage_account_name }} --auth-mode key --account-key {{ storage_account_key.stdout }}
       register: download_status
-      environment:
-        AZCOPY_SPAUTH: "{{ sas_token_output.stdout }}"
 
     # - name: Verificar si la base de datos ya tiene tablas
     #   shell: |
