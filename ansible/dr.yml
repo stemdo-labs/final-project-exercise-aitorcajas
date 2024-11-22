@@ -1,0 +1,42 @@
+---
+- name: Restaurar base de datos PostgreSQL desde copia de seguridad
+  hosts: db_server
+  become: yes
+  vars:
+    db_name: "acajasbd"
+    db_user: "acajasbd"
+    # db_password: "contraseña_bd"
+    backup_file: "/tmp/backup.dump"
+
+  tasks:
+    - name: Verificar si la base de datos ya tiene tablas
+      shell: |
+        PGPASSWORD="{{ db_password }}" psql -U {{ db_user }} -d {{ db_name }} -c "\dt"
+      register: db_check
+      failed_when: db_check.stdout == ""
+      args:
+        executable: /bin/bash
+
+    - name: Vaciar la base de datos si ya existe
+      shell: |
+        PGPASSWORD="{{ db_password }}" psql -U {{ db_user }} -d postgres -c "DROP DATABASE IF EXISTS {{ db_name }}; CREATE DATABASE {{ db_name }};"
+      when: db_check.stdout != ""
+      args:
+        executable: /bin/bash
+
+    - name: Restaurar la base de datos desde el archivo dump
+      shell: |
+        PGPASSWORD="{{ db_password }}" pg_restore -U {{ db_user }} -d {{ db_name }} {{ backup_file }}
+      args:
+        executable: /bin/bash
+
+    - name: Verificar la restauración
+      shell: |
+        PGPASSWORD="{{ db_password }}" psql -U {{ db_user }} -d {{ db_name }} -c "\dt"
+      register: restore_check
+      args:
+        executable: /bin/bash
+
+    - name: Mostrar resultado de la restauración
+      debug:
+        msg: "Tablas restauradas: {{ restore_check.stdout_lines }}"
