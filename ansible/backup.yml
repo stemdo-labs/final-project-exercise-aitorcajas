@@ -33,7 +33,7 @@
         module: ansible.builtin.file
         path: "/backups"
         state: directory
-        mode: '0755'
+        mode: '0777'
 
     - name: Fetch del archivo de backup a la máquina local
       fetch:
