@@ -9,18 +9,24 @@
     db_name: "acajasbd"
     db_user: "acajasbd"
     backup_path: "{{ db_name }}-backup.sql.gz"
+    sas_expiry: "2024-12-12T23:59:59Z"
     # db_password: "contraseña_bd"
 
   tasks:
-    - name: Instalar Azure CLI en Ubuntu/Debian
+    - name: Instalar AzCopy en Ubuntu/Debian
       apt:
-        name: curl
+        name: wget
         state: present
       become: yes
 
-    - name: Descargar e instalar Azure CLI en Ubuntu/Debian
+    - name: Descargar AzCopy
       shell: |
-        curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+        wget https://aka.ms/downloadazcopy-v10-linux -O /tmp/azcopy.tar.gz
+      become: yes
+
+    - name: Extraer AzCopy
+      shell: |
+        tar -xvzf /tmp/azcopy.tar.gz -C /usr/local/bin/
       become: yes
       when: ansible_facts['os_family'] == 'Debian'
 
@@ -30,16 +36,24 @@
       register: azure_login_output
       failed_when: "'ERROR' in azure_login_output.stdout"
 
-    - name: Descargar el backup desde Azure (usando Azure CLI)
+    - name: Generar SAS Token para el contenedor de Azure
       shell: |
-        az storage blob download --account-name {{ storage_account_name }} --container-name {{ container_name }} --file {{ backup_file }} --name "{{ postgres_db }}-backup.sql.gz"
-      environment:
-        AZURE_CLIENT_ID: "$AZURE_CLIENT_ID"
-        AZURE_CLIENT_SECRET: "$AZURE_CLIENT_SECRET"
-        AZURE_TENANT_ID: "$AZURE_TENANT_ID"
-        AZURE_STORAGE_ACCOUNT: "{{ storage_account_name }}"
-      register: download_status
+        az storage container generate-sas \
+          --account-name {{ storage_account_name }} \
+          --name {{ container_name }} \
+          --permissions rw \
+          --expiry {{ sas_expiry }} \
+          --https-only \
+          --output tsv
+      register: sas_token_output
+      no_log: true
 
+    - name: Descargar el backup desde Azure usando AzCopy
+      shell: |
+        azcopy copy "https://{{ storage_account_name }}.blob.core.windows.net/{{ container_name }}/{{ backup_path }}?{{ sas_token_output.stdout }}" "{{ backup_file }}" --recursive
+      register: download_status
+      environment:
+        AZCOPY_SPAUTH: "{{ sas_token_output.stdout }}"
 
     # - name: Verificar si la base de datos ya tiene tablas
     #   shell: |
