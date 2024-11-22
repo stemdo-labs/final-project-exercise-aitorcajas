@@ -32,7 +32,7 @@
 
     - name: Descargar el backup desde Azure (usando Azure CLI)
       shell: |
-        az storage blob download --container-name {{ container_name }} --name {{ backup_path }} --file {{ backup_file }} --account-name {{ storage_account_name }}
+        az storage blob download --account-name {{ storage_account_name }} --container-name {{ container_name }} --file {{ backup_file }} --name "{{ postgres_db }}-backup.sql.gz"
       environment:
         AZURE_CLIENT_ID: "$AZURE_CLIENT_ID"
         AZURE_CLIENT_SECRET: "$AZURE_CLIENT_SECRET"
