@@ -14,6 +14,12 @@
     # db_password: "contraseña_bd"
 
   tasks:
+    - name: Iniciar sesión en Azure CLI con Service Principal
+      shell: |
+        az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID
+      register: azure_login_output
+      failed_when: "'ERROR' in azure_login_output.stdout"
+
     - name: Obtener la clave de la cuenta de almacenamiento de Azure
       shell: |
         az storage account keys list --resource-group {{ rg_name }} --account-name {{ storage_account_name }} --query '[0].value' -o tsv
