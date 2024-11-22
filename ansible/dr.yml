@@ -37,6 +37,10 @@
       failed_when: azure_cli_version.rc != 0
       changed_when: false
 
+    - name: Verifica la versión de Azure CLI
+      ansible.builtin.debug:
+        msg: {{ azure_cli_version }}
+
     - name: Iniciar sesión en Azure CLI con Service Principal
       shell: |
         az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID
