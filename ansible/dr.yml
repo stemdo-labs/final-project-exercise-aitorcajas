@@ -16,7 +16,7 @@
   tasks:
     - name: Iniciar sesión en Azure CLI con Service Principal
       shell: |
-        az login --service-principal -u $ARM_CLIENT_ID -p $ARM_CLIENT_SECRET --tenant $ARM_TENANT_ID
+        az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID
       register: azure_login_output
       failed_when: "'ERROR' in azure_login_output.stdout"
 
@@ -27,13 +27,16 @@
         AZURE_CLIENT_ID: "$AZURE_CLIENT_ID"
         AZURE_CLIENT_SECRET: "$AZURE_CLIENT_SECRET"
         AZURE_TENANT_ID: "$AZURE_TENANT_ID"
-        AZURE_STORAGE_ACCOUNT: "{{ storage_account_name }}"
       register: storage_account_key
       changed_when: false
 
     - name: Descargar el backup desde Azure utilizando la clave de la cuenta
       shell: |
         az storage blob download --container-name {{ container_name }} --name {{ backup_path }} --file {{ backup_file }} --account-name {{ storage_account_name }} --auth-mode key --account-key {{ storage_account_key.stdout }}
+      environment:
+        AZURE_CLIENT_ID: "$AZURE_CLIENT_ID"
+        AZURE_CLIENT_SECRET: "$AZURE_CLIENT_SECRET"
+        AZURE_TENANT_ID: "$AZURE_TENANT_ID"
       register: download_status
 
     # - name: Verificar si la base de datos ya tiene tablas
