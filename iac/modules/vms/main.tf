@@ -94,7 +94,7 @@ resource "azurerm_virtual_machine" "vm_dr" {
 resource "null_resource" "generate_inventory" {
   provisioner "local-exec" {
     command = <<EOT
-      echo '[bd]\nvm-bd ansible_host=${azurerm_network_interface.nic_bd.ip_configuration[0].private_ip_address} ansible_user=acajasbd ansible_ssh_pass=Password1234!' > ../ansible/inventory.ini
+      echo -e "[bd]\nvm-bd ansible_host=${azurerm_network_interface.nic_bd.ip_configuration[0].private_ip_address} ansible_user=acajasbd ansible_ssh_pass=Password1234!" > ../ansible/inventory.ini
     EOT
   }
 }
