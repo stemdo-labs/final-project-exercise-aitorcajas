@@ -26,3 +26,21 @@ jobs:
         run:  |
           cd ansible
           ansible-playbook -i inventory.ini postgresql.yml
+
+      - name: Ejecutar playbook para hacer el backup
+        run: |
+          cd ansible
+          ansible-playbook -i inventory.ini backup.yml
+        env:
+          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+
+      - name: Ejecutar playbook para hacer el DR
+        run: |
+          cd ansible
+          ansible-playbook -i inventory.ini dr.yml
+        env:
+          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
