@@ -23,6 +23,10 @@
     - name: Obtener la clave de la cuenta de almacenamiento de Azure
       shell: |
         az storage account keys list --resource-group {{ rg_name }} --account-name {{ storage_account_name }} --query '[0].value' -o tsv
+      environment:
+        AZURE_CLIENT_ID: "$AZURE_CLIENT_ID"
+        AZURE_CLIENT_SECRET: "$AZURE_CLIENT_SECRET"
+        AZURE_TENANT_ID: "$AZURE_TENANT_ID"
       register: storage_account_key
       changed_when: false
 
