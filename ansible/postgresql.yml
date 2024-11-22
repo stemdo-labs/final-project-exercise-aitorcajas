@@ -1,6 +1,6 @@
 ---
 - name: Configuración e instalación de PostgreSQL
-  hosts: all
+  hosts: [bd]
   become: true
 
   vars:
