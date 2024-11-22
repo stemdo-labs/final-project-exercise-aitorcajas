@@ -20,6 +20,11 @@
       register: azure_login_output
       failed_when: "'ERROR' in azure_login_output.stdout"
 
+    - name: Verificar el resultado del login
+      debug:
+        msg: "Login successful: {{ azure_login_output.stdout }}"
+      when: "'ERROR' not in azure_login_output.stdout"
+
     - name: Obtener la clave de la cuenta de almacenamiento de Azure
       shell: |
         az storage account keys list --resource-group {{ rg_name }} --account-name {{ storage_account_name }} --query '[0].value' -o tsv
