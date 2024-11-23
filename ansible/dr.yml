@@ -1,25 +1,48 @@
 ---
 - name: Descargar y restaurar base de datos PostgreSQL desde copia de seguridad
-  hosts: db_server
+  hosts: [bd]
   become: yes
   vars:
-    azure_container_url: "https://staacajasdvfinlab.blob.core.windows.net/backup"
+    storage_account_name: "staacajasdvfinlab"
+    container_name: "backup"
     backup_file: "/tmp/backup.dump"
     db_name: "acajasbd"
     db_user: "acajasbd"
+    backup_path: "{{ db_name }}-backup.sql.gz"
+    rg_name: "rg-acajas-dvfinlab"
+    # sas_expiry: "2024-12-12T23:59:59Z"
     # db_password: "contraseña_bd"
 
   tasks:
-    - name: Descargar la última copia de seguridad desde Azure
-      get_url:
-        url: "{{ azure_container_url }}"
-        dest: "{{ backup_file }}"
-      register: download_status
+    - name: Iniciar sesión en Azure CLI con Service Principal
+      shell: |
+        az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID
+      register: azure_login_output
+      failed_when: "'ERROR' in azure_login_output.stdout"
 
-    - name: Validar que se descargó el archivo de backup
-      fail:
-        msg: "No se pudo descargar el backup desde Azure"
-      when: download_status.failed
+    - name: Verificar el resultado del login
+      debug:
+        msg: "Login successful: {{ azure_login_output.stdout }}"
+      when: "'ERROR' not in azure_login_output.stdout"
+
+    - name: Obtener la clave de la cuenta de almacenamiento de Azure
+      shell: |
+        az storage account keys list --resource-group {{ rg_name }} --account-name {{ storage_account_name }} --query '[0].value' -o tsv
+      environment:
+        AZURE_CLIENT_ID: "$AZURE_CLIENT_ID"
+        AZURE_CLIENT_SECRET: "$AZURE_CLIENT_SECRET"
+        AZURE_TENANT_ID: "$AZURE_TENANT_ID"
+      register: storage_account_key
+      changed_when: false
+
+    - name: Descargar el backup desde Azure utilizando la clave de la cuenta
+      shell: |
+        az storage blob download --container-name {{ container_name }} --name {{ backup_path }} --file {{ backup_file }} --account-name {{ storage_account_name }} --auth-mode key --account-key {{ storage_account_key.stdout }}
+      environment:
+        AZURE_CLIENT_ID: "$AZURE_CLIENT_ID"
+        AZURE_CLIENT_SECRET: "$AZURE_CLIENT_SECRET"
+        AZURE_TENANT_ID: "$AZURE_TENANT_ID"
+      register: download_status
 
     # - name: Verificar si la base de datos ya tiene tablas
     #   shell: |
@@ -48,6 +71,11 @@
       register: restore_check
       args:
         executable: /bin/bash
+
+    - name: Eliminar el archivo de backup local
+      file:
+        path: "{{ backup_file }}"
+        state: absent
 
     # - name: Mostrar resultado de la restauración
     #   debug:
