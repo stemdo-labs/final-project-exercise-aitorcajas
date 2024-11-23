@@ -19,7 +19,8 @@ resource "azurerm_network_interface" "nic_dr" {
   ip_configuration {
     name                          = "ip-configuration-dr"
     subnet_id                     = var.subnet_vm_id
-    private_ip_address_allocation = "Dynamic"
+    private_ip_address_allocation = "Static"
+    private_ip_address = "10.0.1.5"
     public_ip_address_id          = var.pip_id
   }
 }
