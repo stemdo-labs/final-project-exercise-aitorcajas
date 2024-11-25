@@ -8,6 +8,12 @@
     db_user: "acajasbd"
 
   tasks:
+    - name: Copiar archivo a la máquina remota
+      ansible.builtin.copy:
+        src: "{{ backup_file }}"
+        dest: "{{ backup_file }}"
+        mode: '0777'
+  
     - name: "Restore the database"
       postgresql_db:
         state: restore
@@ -28,6 +34,11 @@
       file:
         path: "{{ backup_file }}"
         state: absent
+
+    - name: Borrar directorio en la máquina de control
+      delegate_to: localhost
+      ansible.builtin.command:
+        cmd: rm -rf "{{ backup_file }}"
 
     - name: Mostrar resultado de la restauración
       debug:
