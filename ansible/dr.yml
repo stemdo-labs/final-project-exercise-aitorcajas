@@ -38,6 +38,7 @@
 
     - name: Descargar el backup desde Azure utilizando la clave de la cuenta
       shell: |
+        az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID
         az storage blob download --account-name {{ storage_account_name }} -f {{ backup_file }} -c {{ container_name }} -n {{ backup_path }} --auth-mode login
       register: download_status
 
