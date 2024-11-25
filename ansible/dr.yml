@@ -27,9 +27,8 @@
       when: "'ERROR' not in azure_login_output.stdout"
 
     - name: Obtener la clave de la cuenta de almacenamiento de Azure
-      become: false
       shell: |
-        az storage account keys list --resource-group {{ rg_name }} --account-name {{ storage_account_name }} --query '[0].value' -o tsv
+        sudo az storage account keys list --resource-group {{ rg_name }} --account-name {{ storage_account_name }} --query '[0].value' -o tsv
       environment:
         AZURE_CLIENT_ID: "$AZURE_CLIENT_ID"
         AZURE_CLIENT_SECRET: "$AZURE_CLIENT_SECRET"
