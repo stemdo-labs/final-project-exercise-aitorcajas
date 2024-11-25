@@ -10,6 +10,9 @@ jobs:
       - name: Checkout del repositorio
         uses: actions/checkout@v3
 
+      - name: Listar
+        run: ls
+
       - name: Extraer versión
         id: version
         run: |
