@@ -13,44 +13,44 @@ jobs:
       #   run: |
       #     curl -sL https://aka.ms/InstallAzureCLIDeb| sudo bash
       
-      - name: Instalar Ansible
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y ansible
+      # - name: Instalar Ansible
+      #   run: |
+      #     sudo apt-get update
+      #     sudo apt-get install -y ansible
 
-      - name: Verify Ansible Installation
-        run: ansible --version
+      # - name: Verify Ansible Installation
+      #   run: ansible --version
 
-      - name: Instalar ssh
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y sshpass
+      # - name: Instalar ssh
+      #   run: |
+      #     sudo apt-get update
+      #     sudo apt-get install -y sshpass
 
       # - name: Ejecutar playbook para instalar PostgreSQL
       #   run:  |
       #     cd ansible
       #     ansible-playbook -i inventory.ini postgresql.yml
 
-      - name: Ejecutar playbook para hacer el backup
-        run: |
-          cd ansible
-          ansible-playbook -i inventory.ini backup.yml
-        env:
-          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
-          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      # - name: Ejecutar playbook para hacer el backup
+      #   run: |
+      #     cd ansible
+      #     ansible-playbook -i inventory.ini backup.yml
+      #   env:
+      #     AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      #     AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+      #     AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
 
-      - name: Login az
-        run: |
-          az login --service-principal -u ${{ secrets.ARM_CLIENT_ID }} -p ${{ secrets.ARM_CLIENT_SECRET }} --tenant ${{ secrets.ARM_TENANT_ID }}
+      # - name: Login az
+      #   run: |
+      #     az login --service-principal -u ${{ secrets.ARM_CLIENT_ID }} -p ${{ secrets.ARM_CLIENT_SECRET }} --tenant ${{ secrets.ARM_TENANT_ID }}
 
-      - name: Subir backup
-        run: |
-          az storage blob upload --account-name staacajasdvfinlab --container-name backup --file /backups/acajasbd-backup.sql.gz --name acajasbd-backup.sql.gz --overwrite
+      # - name: Subir backup
+      #   run: |
+      #     az storage blob upload --account-name staacajasdvfinlab --container-name backup --file /backups/acajasbd-backup.sql.gz --name acajasbd-backup.sql.gz --overwrite
 
-      - name: Descargar el backup desde Azure utilizando la clave de la cuenta
-        run: |
-          az storage blob download --account-name staacajasdvfinlab -f /tmp/backup.sql.gz -c backup -n acajasbd-backup.sql.gz
+      # - name: Descargar el backup desde Azure utilizando la clave de la cuenta
+      #   run: |
+      #     az storage blob download --account-name staacajasdvfinlab -f /tmp/backup.sql.gz -c backup -n acajasbd-backup.sql.gz
 
       - name: Ejecutar playbook para hacer el DR
         run: |
