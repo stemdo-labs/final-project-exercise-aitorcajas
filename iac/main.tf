@@ -69,8 +69,15 @@ resource "azurerm_kubernetes_cluster" "aks" {
 
 resource "azurerm_container_registry" "acajascr" {
   name                = var.cr_name
-  location            = var.location
+  location            = var.location_cluster
   resource_group_name = var.rg_name
   sku                 = "Premium"
   admin_enabled       = false
 }
+
+# resource "azurerm_role_assignment" "ra" {
+#   principal_id                     = azurerm_kubernetes_cluster.aks.kubelet_identity[0].object_id
+#   role_definition_name             = "AcrPull"
+#   scope                            = azurerm_container_registry.acajascr.id
+#   skip_service_principal_aad_check = true
+# }

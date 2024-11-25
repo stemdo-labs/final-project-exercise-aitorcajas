@@ -1,4 +1,4 @@
-name: Disaster Recovery Diario
+name: Disaster Recovery
 
 on:
  workflow_dispatch:
