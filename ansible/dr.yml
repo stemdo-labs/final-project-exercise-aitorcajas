@@ -1,6 +1,6 @@
 ---
 - name: Descargar y restaurar base de datos PostgreSQL desde copia de seguridad
-  hosts: localhost
+  hosts: [bd]
   become: yes
   vars:
     storage_account_name: "staacajasdvfinlab"
@@ -37,7 +37,7 @@
 
     - name: Descargar el backup desde Azure utilizando la clave de la cuenta
       shell: |
-        sudo az storage blob download --account-name {{ storage_account_name }} -f {{ backup_file }} -c {{ container_name }} -n {{ backup_path }} --auth-mode login
+        sudo az storage blob download --account-name {{ storage_account_name }} -f {{ backup_file }} -c {{ container_name }} -n {{ backup_path }}
       register: download_status
 
     # - name: Verificar si la base de datos ya tiene tablas
