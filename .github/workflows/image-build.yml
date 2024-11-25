@@ -18,7 +18,7 @@ jobs:
             VERSION=$(grep -oP '<version>\K[^\<]+' pom.xml | sed -n '2p')
             echo "VERSION=$VERSION" >> $GITHUB_ENV
             echo "app_version=$VERSION" >> $GITHUB_OUTPUT
-          elfi [[ "$REPO_NAME" == *"frontend"* ]]; then
+          elif [[ "$REPO_NAME" == *"frontend"* ]]; then
             VERSION=$(jq -r '.version' package.json)
             echo "VERSION=$VERSION" >> $GITHUB_ENV
             echo "app_version=$VERSION" >> $GITHUB_OUTPUT
@@ -32,7 +32,7 @@ jobs:
             DESARROLLO="backend"
             echo "DESARROLLO=$DESARROLLO" >> $GITHUB_ENV
             echo "app_desarrollo=$DESARROLLO" >> $GITHUB_OUTPUT
-          elfi [[ "$REPO_NAME" == *"frontend"* ]]; then
+          elif [[ "$REPO_NAME" == *"frontend"* ]]; then
             DESARROLLO="frontend"
             echo "DESARROLLO=$DESARROLLO" >> $GITHUB_ENV
             echo "app_desarrollo=$DESARROLLO" >> $GITHUB_OUTPUT
