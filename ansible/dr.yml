@@ -5,7 +5,7 @@
   vars:
     storage_account_name: "staacajasdvfinlab"
     container_name: "backup"
-    backup_file: "/tmp/backup.dump"
+    backup_file: "/tmp/backup.sql.gz"
     db_name: "acajasbd"
     db_user: "acajasbd"
     backup_path: "{{ db_name }}-backup.sql.gz"
@@ -35,10 +35,10 @@
     #   register: storage_account_key
     #   changed_when: false
 
-    - name: Descargar el backup desde Azure utilizando la clave de la cuenta
-      shell: |
-        sudo az storage blob download --account-name {{ storage_account_name }} -f {{ backup_file }} -c {{ container_name }} -n {{ backup_path }}
-      register: download_status
+    # - name: Descargar el backup desde Azure utilizando la clave de la cuenta
+    #   shell: |
+    #     sudo az storage blob download --account-name {{ storage_account_name }} -f {{ backup_file }} -c {{ container_name }} -n {{ backup_path }}
+    #   register: download_status
 
     # - name: Verificar si la base de datos ya tiene tablas
     #   shell: |
