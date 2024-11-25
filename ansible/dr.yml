@@ -42,9 +42,8 @@
 
     - name: Verificar si la base de datos ya tiene tablas
       become: true
-      become_user: postgres
       shell: |
-        psql -U {{ db_user }} -d {{ db_name }} -c "\dt"
+        psql -U {{ db_user }} -d {{ db_name }}
       register: db_check
       failed_when: db_check.stdout == ""
       args:
