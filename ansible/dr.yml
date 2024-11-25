@@ -26,20 +26,20 @@
         msg: "Login successful: {{ azure_login_output.stdout }}"
       when: "'ERROR' not in azure_login_output.stdout"
 
-    - name: Obtener la clave de la cuenta de almacenamiento de Azure
-      shell: |
-        sudo az storage account keys list --resource-group {{ rg_name }} --account-name {{ storage_account_name }} --query '[0].value' -o tsv
-      environment:
-        AZURE_CLIENT_ID: "$AZURE_CLIENT_ID"
-        AZURE_CLIENT_SECRET: "$AZURE_CLIENT_SECRET"
-        AZURE_TENANT_ID: "$AZURE_TENANT_ID"
-      register: storage_account_key
-      changed_when: false
+    # - name: Obtener la clave de la cuenta de almacenamiento de Azure
+    #   shell: |
+    #     sudo az storage account keys list --resource-group {{ rg_name }} --account-name {{ storage_account_name }} --query '[0].value' -o tsv
+    #   environment:
+    #     AZURE_CLIENT_ID: "$AZURE_CLIENT_ID"
+    #     AZURE_CLIENT_SECRET: "$AZURE_CLIENT_SECRET"
+    #     AZURE_TENANT_ID: "$AZURE_TENANT_ID"
+    #   register: storage_account_key
+    #   changed_when: false
 
     - name: Descargar el backup desde Azure utilizando la clave de la cuenta
       become: false
       shell: |
-        az storage blob download --container-name {{ container_name }} --name {{ backup_path }} --file {{ backup_file }} --account-name {{ storage_account_name }} --auth-mode key --account-key {{ storage_account_key.stdout }}
+        az storage blob download --account-name {{ storage_account_name }} -f {{ backup_file }} -c {{ container_name }} -n {{ backup_path }}
       environment:
         AZURE_CLIENT_ID: "$AZURE_CLIENT_ID"
         AZURE_CLIENT_SECRET: "$AZURE_CLIENT_SECRET"
