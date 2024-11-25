@@ -10,9 +10,6 @@ jobs:
       - name: Checkout del repositorio
         uses: actions/checkout@v3
 
-      - name: Listar
-        run: ls
-
       - name: Extraer versión
         id: version
         run: |
@@ -24,7 +21,7 @@ jobs:
 
       - name: Cargar el nombre de la imagen
         id: cargar_imagen
-        uses: ./.github/actions
+        uses: stemdo-labs/final-project-exercise-aitorcajas/.github/action@main
         with:
           version: ${{steps.version.outputs.app_version}}
 
