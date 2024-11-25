@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: backend-maven
-        image: acajascr.azurecr.io/backend:0.0.1-SNAPSHOT
+        image: acajascr.azurecr.io/backend:1.0.0-SNAPSHOT
         # resources:
         #   limits:
         #     memory: "128Mi"

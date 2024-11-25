@@ -6,25 +6,15 @@
     backup_file: "/tmp/backup.sql.gz"
     db_name: "acajasbd"
     db_user: "acajasbd"
-    backup_path: "{{ db_name }}-backup.sql.gz"
 
   tasks:
-    - name: Vaciar la base de datos si ya existe
-      become: true
+    - name: "Restore the database"
+      postgresql_db:
+        state: restore
+        name: "{{db_name}}"
+        target: "{{backup_file}}"
+      become: yes
       become_user: postgres
-      shell: |
-        psql -U {{ db_user }} -d {{ db_name }} -c "DROP DATABASE IF EXISTS {{ db_name }}" 
-        psql -U {{ db_user }} -d {{ db_name }} -c "CREATE DATABASE {{ db_name }}"
-      # when: db_check.stdout != ""
-      args:
-        executable: /bin/bash
-
-    - name: Restaurar la base de datos desde el archivo dump
-      become: true
-      shell: |
-        pg_restore -U {{ db_user }} -d {{ db_name }} {{ backup_file }}
-      args:
-        executable: /bin/bash
 
     - name: Verificar la restauración
       become: true
