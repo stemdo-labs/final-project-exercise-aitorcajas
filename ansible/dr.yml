@@ -1,0 +1,44 @@
+---
+- name: Descargar y restaurar base de datos PostgreSQL desde copia de seguridad
+  hosts: [bd]
+  become: yes
+  vars:
+    backup_file: "/tmp/backup.sql.gz"
+    db_name: "acajasbd"
+    db_user: "acajasbd"
+    backup_path: "{{ db_name }}-backup.sql.gz"
+
+  tasks:
+    - name: Vaciar la base de datos si ya existe
+      become: true
+      become_user: postgres
+      shell: |
+        psql -U {{ db_user }} -d {{ db_name }} -c "DROP DATABASE IF EXISTS {{ db_name }}" 
+        psql -U {{ db_user }} -d {{ db_name }} -c "CREATE DATABASE {{ db_name }}"
+      # when: db_check.stdout != ""
+      args:
+        executable: /bin/bash
+
+    - name: Restaurar la base de datos desde el archivo dump
+      become: true
+      shell: |
+        pg_restore -U {{ db_user }} -d {{ db_name }} {{ backup_file }}
+      args:
+        executable: /bin/bash
+
+    - name: Verificar la restauración
+      become: true
+      shell: |
+        psql -U {{ db_user }} -d {{ db_name }} -c "\dt"
+      register: restore_check
+      args:
+        executable: /bin/bash
+
+    - name: Eliminar el archivo de backup local
+      file:
+        path: "{{ backup_file }}"
+        state: absent
+
+    - name: Mostrar resultado de la restauración
+      debug:
+        msg: "Tablas restauradas: {{ restore_check.stdout_lines }}"

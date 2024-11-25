@@ -6,7 +6,8 @@ resource "azurerm_network_interface" "nic_bd" {
   ip_configuration {
     name                          = "ip-configuration-bd"
     subnet_id                     = var.subnet_vm_id
-    private_ip_address_allocation = "Dynamic"
+    private_ip_address_allocation = "Static"
+    private_ip_address = "10.0.1.4"
   }
 }
 
@@ -18,7 +19,8 @@ resource "azurerm_network_interface" "nic_dr" {
   ip_configuration {
     name                          = "ip-configuration-dr"
     subnet_id                     = var.subnet_vm_id
-    private_ip_address_allocation = "Dynamic"
+    private_ip_address_allocation = "Static"
+    private_ip_address = "10.0.1.5"
     public_ip_address_id          = var.pip_id
   }
 }
@@ -91,10 +93,10 @@ resource "azurerm_virtual_machine" "vm_dr" {
   }
 }
 
-resource "null_resource" "generate_inventory" {
-  provisioner "local-exec" {
-    command = <<EOT
-      echo -e "[bd]\nvm-bd ansible_host=${azurerm_network_interface.nic_bd.ip_configuration[0].private_ip_address} ansible_user=acajasbd ansible_ssh_pass=Password1234! ansible_become=true ansible_become_method=sudo ansible_become_user=root" > ../ansible/inventory.ini
-    EOT
-  }
-}
+# resource "null_resource" "generate_inventory" {
+#   provisioner "local-exec" {
+#     command = <<EOT
+#       echo -e "[bd]\nvm-bd ansible_host=${azurerm_network_interface.nic_bd.ip_configuration[0].private_ip_address} ansible_user=acajasbd ansible_ssh_pass=Password1234!" > ../ansible/inventory.ini
+#     EOT
+#   }
+# }

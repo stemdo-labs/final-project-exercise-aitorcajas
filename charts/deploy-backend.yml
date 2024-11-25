@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploy-backend
+spec:
+  selector:
+    matchLabels:
+      app: backend-maven
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: backend-maven
+    spec:
+      containers:
+      - name: backend-maven
+        image: acajascr.azurecr.io/backend:0.0.1-SNAPSHOT
+        # resources:
+        #   limits:
+        #     memory: "128Mi"
+        #     cpu: "500m"
+        ports:
+        - containerPort: 8080
