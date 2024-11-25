@@ -42,7 +42,7 @@
 
     - name: Verificar si la base de datos ya tiene tablas
       become: true
-      become_user: postgres
+      become_user: acajasbd
       shell: |
         psql -U {{ db_user }} -d {{ db_name }}
       register: db_check
