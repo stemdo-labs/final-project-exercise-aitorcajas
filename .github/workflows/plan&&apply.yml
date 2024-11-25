@@ -85,16 +85,3 @@ jobs:
      tf_actions_subcommand: 'apply'
      tf_actions_working_dir: "./iac"
      tf_actions_auto_approve: true
-     
-  # - name: Comprobar inventario
-  #   run: |
-  #     cd ansible
-  #     ls
-
-  # - name: Agregar y hacer commit del archivo al repositorio
-  #   run: |
-  #     git config --global user.name "aitorcajas"
-  #     git config --global user.email "acajas@stemdo.io"
-  #     git add ./ansible/inventory.ini
-  #     git commit -m "Generar y agregar archivo inventory.ini al repositorio"
-  #     git push
