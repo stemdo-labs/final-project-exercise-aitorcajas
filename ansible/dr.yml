@@ -42,7 +42,7 @@
 
     - name: Verificar si la base de datos ya tiene tablas
       shell: |
-        PGPASSWORD="{{ db_password }}" psql -U {{ db_user }} -d {{ db_name }} -c "\dt"
+        psql -U {{ db_user }} -d {{ db_name }} -c "\dt"
       register: db_check
       failed_when: db_check.stdout == ""
       args:
