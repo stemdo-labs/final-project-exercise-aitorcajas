@@ -46,7 +46,7 @@ jobs:
 
       - name: Subir backup
         run: |
-          az storage blob upload --account-name staacajasdvfinlab --container-name backup --file /backups/acajasbd-backup.sql.gz --name acajasbd-backup.sql.gz
+          az storage blob upload --account-name staacajasdvfinlab --container-name backup --file /backups/acajasbd-backup.sql.gz --name acajasbd-backup.sql.gz --overwrite
 
       - name: Descargar el backup desde Azure utilizando la clave de la cuenta
         run: |
