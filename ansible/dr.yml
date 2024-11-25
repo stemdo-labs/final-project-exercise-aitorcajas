@@ -40,13 +40,13 @@
     #     sudo az storage blob download --account-name {{ storage_account_name }} -f {{ backup_file }} -c {{ container_name }} -n {{ backup_path }}
     #   register: download_status
 
-    # - name: Verificar si la base de datos ya tiene tablas
-    #   shell: |
-    #     PGPASSWORD="{{ db_password }}" psql -U {{ db_user }} -d {{ db_name }} -c "\dt"
-    #   register: db_check
-    #   failed_when: db_check.stdout == ""
-    #   args:
-    #     executable: /bin/bash
+    - name: Verificar si la base de datos ya tiene tablas
+      shell: |
+        PGPASSWORD="{{ db_password }}" psql -U {{ db_user }} -d {{ db_name }} -c "\dt"
+      register: db_check
+      failed_when: db_check.stdout == ""
+      args:
+        executable: /bin/bash
 
     - name: Vaciar la base de datos si ya existe
       shell: |
