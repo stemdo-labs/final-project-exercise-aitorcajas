@@ -15,6 +15,7 @@
 
   tasks:
     - name: Iniciar sesión en Azure CLI con Service Principal
+      become: false
       shell: |
         az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID
       register: azure_login_output
@@ -26,6 +27,7 @@
       when: "'ERROR' not in azure_login_output.stdout"
 
     - name: Obtener la clave de la cuenta de almacenamiento de Azure
+      become: false
       shell: |
         az storage account keys list --resource-group {{ rg_name }} --account-name {{ storage_account_name }} --query '[0].value' -o tsv
       environment:
@@ -36,6 +38,7 @@
       changed_when: false
 
     - name: Descargar el backup desde Azure utilizando la clave de la cuenta
+      become: false
       shell: |
         az storage blob download --container-name {{ container_name }} --name {{ backup_path }} --file {{ backup_file }} --account-name {{ storage_account_name }} --auth-mode key --account-key {{ storage_account_key.stdout }}
       environment:
