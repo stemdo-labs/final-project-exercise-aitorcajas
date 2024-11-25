@@ -35,7 +35,7 @@ jobs:
         uses: stemdo-labs/final-project-exercise-aitorcajas/.github/action@main
         with:
           version: ${{steps.version.outputs.app_version}}
-          desarrollo: ${{stepd.desarrollo.outputs.app_desarrollo}}
+          desarrollo: ${{steps.desarrollo.outputs.app_desarrollo}}
 
       - name: Build de la imagen
         run: |
