@@ -41,6 +41,8 @@
     #   register: download_status
 
     - name: Verificar si la base de datos ya tiene tablas
+      become: true
+      become_user: postgres
       shell: |
         psql -U {{ db_user }} -d {{ db_name }} -c "\dt"
       register: db_check
@@ -49,6 +51,8 @@
         executable: /bin/bash
 
     - name: Vaciar la base de datos si ya existe
+      become: true
+      become_user: postgres
       shell: |
         psql -U {{ db_user }} -d postgres -c "DROP DATABASE IF EXISTS {{ db_name }}; CREATE DATABASE {{ db_name }};"
       when: db_check.stdout != ""
@@ -56,12 +60,16 @@
         executable: /bin/bash
 
     - name: Restaurar la base de datos desde el archivo dump
+      become: true
+      become_user: postgres
       shell: |
         pg_restore -U {{ db_user }} -d {{ db_name }} {{ backup_file }}
       args:
         executable: /bin/bash
 
     - name: Verificar la restauración
+      become: true
+      become_user: postgres
       shell: |
         psql -U {{ db_user }} -d {{ db_name }} -c "\dt"
       register: restore_check
