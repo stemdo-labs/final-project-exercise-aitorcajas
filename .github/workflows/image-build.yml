@@ -2,10 +2,6 @@ name: Buildear imagen
 
 on:
   workflow_call:
-    inputs:
-      repo:
-        type: string
-        required: true
 
 jobs:
   build:
@@ -13,16 +9,15 @@ jobs:
     steps:
       - name: Checkout del repositorio
         uses: actions/checkout@v3
-        with:
-          repository: ${{ inputs.repo }}
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Extraer versión
         id: version
         run: |
-          VERSION=$(grep -oP '<version>\K[^\<]+' pom.xml | sed -n '2p')
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
-          echo "app_version=$VERSION" >> $GITHUB_OUTPUT
+          if [ "${{ github.repository }}" = *"backend"* ]; then
+            VERSION=$(grep -oP '<version>\K[^\<]+' pom.xml | sed -n '2p')
+            echo "VERSION=$VERSION" >> $GITHUB_ENV
+            echo "app_version=$VERSION" >> $GITHUB_OUTPUT
+          fi
 
       - name: Cargar el nombre de la imagen
         id: cargar_imagen
