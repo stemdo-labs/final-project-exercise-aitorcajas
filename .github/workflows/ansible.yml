@@ -27,6 +27,14 @@ jobs:
           cd ansible
           ansible-playbook -i inventory.ini postgresql.yml
 
+      - name: Instalar az CLI
+        run: |
+          curl -sL https://aka.ms/InstallAzureCLIDeb| sudo bash
+
+      - name: Login az
+        run: |
+          az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID
+
       # - name: Ejecutar playbook para hacer el backup
       #   run: |
       #     cd ansible
@@ -40,7 +48,3 @@ jobs:
         run: |
           cd ansible
           ansible-playbook -i inventory.ini dr.yml
-        env:
-          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
-          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
