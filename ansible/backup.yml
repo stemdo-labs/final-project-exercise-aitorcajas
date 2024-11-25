@@ -6,8 +6,6 @@
     postgres_db: "acajasbd"
     postgres_user: "acajasbd"
     backup_file: "/tmp/{{ postgres_db }}-backup.sql.gz"
-    storage_account_name: "staacajasdvfinlab"
-    container_name: "backup"
     encryption_key: "password"
     local_backup_path: "/backups/{{ postgres_db }}-backup.sql.gz"
 
@@ -40,55 +38,6 @@
         src: "{{ backup_file }}"
         dest: "{{ local_backup_path }}"
         flat: yes
-
-    - name: Instalar dependencias necesarias
-      apt:
-        name:
-          - ca-certificates
-          - curl
-          - apt-transport-https
-          - lsb-release
-          - gnupg
-        state: present
-        update_cache: yes
-      when: ansible_os_family == "Debian"
-
-    - name: Descargar e instalar Azure CLI
-      shell: |
-        curl -sL https://aka.ms/InstallAzureCLIDeb| sudo bash
-      when: ansible_os_family == "Debian"
-
-    - name: Verificar instalación de Azure CLI
-      command: az --version
-      register: azure_cli_version
-      failed_when: azure_cli_version.rc != 0
-      changed_when: false
-
-    - name: Verifica la versión de Azure CLI
-      ansible.builtin.debug:
-        msg: "{{ azure_cli_version }}"
-
-    - name: Iniciar sesión en Azure CLI con Service Principal
-      shell: |
-        az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID
-      register: azure_login_output
-      failed_when: "'ERROR' in azure_login_output.stdout"
-
-    - name: Verificar el resultado del login
-      debug:
-        msg: "Login successful: {{ azure_login_output.stdout }}"
-      when: "'ERROR' not in azure_login_output.stdout"
-
-    - name: Subir el archivo de backup a Azure Blob Storage
-      shell: |
-        az storage blob upload --account-name {{ storage_account_name }} --container-name {{ container_name }} --file {{ backup_file }} --name "{{ postgres_db }}-backup.sql.gz"
-      environment:
-        AZURE_CLIENT_ID: "$AZURE_CLIENT_ID"
-        AZURE_CLIENT_SECRET: "$AZURE_CLIENT_SECRET"
-        AZURE_TENANT_ID: "$AZURE_TENANT_ID"
-        AZURE_STORAGE_ACCOUNT: "{{ storage_account_name }}"
-      register: upload_output
-      failed_when: "'ERROR' in upload_output.stdout"
     
     - name: Eliminar el archivo de backup local
       file:
