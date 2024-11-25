@@ -52,7 +52,7 @@ jobs:
         run: |
           az storage blob download --account-name staacajasdvfinlab -f /tmp/backup.sql.gz -c backup -n acajasbd-backup.sql.gz
 
-      # - name: Ejecutar playbook para hacer el DR
-      #   run: |
-      #     cd ansible
-      #     ansible-playbook -i inventory.ini dr.yml
+      - name: Ejecutar playbook para hacer el DR
+        run: |
+          cd ansible
+          ansible-playbook -i inventory.ini dr.yml
