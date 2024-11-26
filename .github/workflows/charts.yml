@@ -39,14 +39,9 @@ jobs:
           echo "front_version=$VERSION" >> $GITHUB_OUTPUT
         working-directory: charts
 
-      - name: Mostrar
-        run: |
-          echo "BACKEND: ${{steps.back_version.outputs.back_version}}"
-          echo "FRONTEND: ${{steps.front_version.outputs.front_version}}"
-
       - name: Push Chart backend
         run: |
-          helm push backend-${{steps.back_version.outputs.back_version}}.tgz oci://harbor.codeops.es/harbor/projects/2/repositories/acajas
+          helm push backend-${{steps.back_version.outputs.back_version}}.tgz oci://harbor.codeops.es/acajas
         env:
           HARBOR_USERNAME: ${{ secrets.HARBOR_USER }}
           HARBOR_PASSWORD: ${{ secrets.HARBOR_PASS }}
@@ -54,7 +49,7 @@ jobs:
 
       - name: Push Chart frontend
         run: |
-          helm push frontend-${{steps.front_version.outputs.front_version}}.tgz oci://core.harbor.domain/acajas
+          helm push frontend-${{steps.front_version.outputs.front_version}}.tgz oci://harbor.codeops.es/acajas
         env:
           HARBOR_USERNAME: ${{ secrets.HARBOR_USER }}
           HARBOR_PASSWORD: ${{ secrets.HARBOR_PASS }} 
