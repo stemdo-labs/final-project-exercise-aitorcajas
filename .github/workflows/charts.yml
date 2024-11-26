@@ -17,8 +17,9 @@ jobs:
 
       - name: Comprimir charts
         run: |
-          helm package backend/
-          helm package frontend/
+          ls
+          helm package ./backend/
+          helm package ./frontend/
         working-directory: charts
 
       - name: Version del backend
