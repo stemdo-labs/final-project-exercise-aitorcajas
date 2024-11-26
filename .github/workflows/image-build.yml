@@ -102,7 +102,8 @@ jobs:
       run: |
         if ! kubectl get secrets acr-secret > /dev/null 2>&1; then
           kubectl create secret docker-registry acr-secret --docker-server=acajascr.azurecr.io \
-          --docker-username=${{ secrets.ARM_CLIENT_ID }} --docker-password=${{ secrets.ARM_CLIENT_SECRET }}
+          --docker-username=${{ secrets.ARM_CLIENT_ID }} --docker-password=${{ secrets.ARM_CLIENT_SECRET }} \
+          -n default
         fi
 
     - name: Instalar Helm
