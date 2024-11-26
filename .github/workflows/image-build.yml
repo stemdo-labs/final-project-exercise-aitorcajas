@@ -120,6 +120,19 @@ jobs:
       run: |
         helm registry login harbor.codeops.es -u ${{ secrets.HARBOR_USER }} -p ${{ secrets.HARBOR_PASS }}
 
-    - name: Instalar charts
+    - name: Verificar si la release existe
+      id: check_release
       run: |
-        helm install ${{ needs.build.outputs.app_desarrollo }} oci://harbor.codeops.es/acajas/${{ needs.build.outputs.app_desarrollo }} -n default
+        if helm status ${{ needs.build.outputs.app_desarrollo }} -n default > /dev/null 2>&1; then
+          echo "exists=true" >> $GITHUB_OUTPUT
+        else
+          echo "exists=false" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Instalar o actualizar Helm Chart
+      run: |
+        if [ "${{ steps.check_release.outputs.exists }}" == "true" ]; then
+          helm upgrade ${{ needs.build.outputs.app_desarrollo }} oci://harbor.codeops.es/acajas/${{ needs.build.outputs.app_desarrollo }} -n default
+        else
+          helm install ${{ needs.build.outputs.app_desarrollo }} oci://harbor.codeops.es/acajas/${{ needs.build.outputs.app_desarrollo }} -n default
+        fi
