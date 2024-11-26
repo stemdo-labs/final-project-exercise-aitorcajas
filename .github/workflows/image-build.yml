@@ -18,7 +18,7 @@ jobs:
   build:
     runs-on: runner-stemdo-labs
     outputs:
-      desarrollo: ${{steps.desarrollo.outputs.app_desarrollo}}
+      app_desarrollo: ${{steps.desarrollo.outputs.app_desarrollo}}
     steps:
       - name: Checkout del repositorio
         uses: actions/checkout@v3
