@@ -10,18 +10,22 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Setup de Helm
-        uses: azure/setup-helm@v3
+      - name: Instalar Helm
+        run: |
+          curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+          chmod 700 get_helm.sh
+          ./get_helm.sh
 
       - name: Comprimir charts
         run: |
-          helm package backend/
-          helm package frontend/
+          helm package ./backend/
+          helm package ./frontend/
         working-directory: charts
 
       - name: Version del backend
         id: back_version
         run: |
+          ls
           VERSION=$(grep "^version:" ./backend/Chart.yaml | awk '{print $2}')
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           echo "back_version=$VERSION" >> $GITHUB_OUTPUT
@@ -35,7 +39,16 @@ jobs:
           echo "front_version=$VERSION" >> $GITHUB_OUTPUT
         working-directory: charts
 
-      - name: Mostrar
+      - name: Login Harbor
         run: |
-          echo "BACKEND: ${{steps.back_version.outputs.back_version}}"
-          echo "FRONTEND: ${{steps.front_version.outputs.front_version}}"
+          helm registry login harbor.codeops.es -u ${{ secrets.HARBOR_USER }} -p ${{ secrets.HARBOR_PASS }}
+
+      - name: Push Chart backend
+        run: |
+          helm push backend-${{steps.back_version.outputs.back_version}}.tgz oci://harbor.codeops.es/acajas
+        working-directory: charts     
+
+      - name: Push Chart frontend
+        run: |
+          helm push frontend-${{steps.front_version.outputs.front_version}}.tgz oci://harbor.codeops.es/acajas
+        working-directory: charts
