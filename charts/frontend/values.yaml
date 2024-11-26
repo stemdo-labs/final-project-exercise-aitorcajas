@@ -2,4 +2,4 @@
 namespace: default
 
 #Número de replicas
-replicas: 2
+replicas: 1
