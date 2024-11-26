@@ -49,7 +49,8 @@ jobs:
           helm push backend-${{steps.back_version.outputs.back_version}}.tgz oci://core.harbor.domain/acajas
         env:
           HARBOR_USERNAME: ${{ secrets.HARBOR_USERNAME }}
-          HARBOR_PASSWORD: ${{ secrets.HARBOR_PASSWORD }}     
+          HARBOR_PASSWORD: ${{ secrets.HARBOR_PASSWORD }}
+        working-directory: charts     
 
       - name: Push Chart frontend
         run: |
@@ -57,3 +58,4 @@ jobs:
         env:
           HARBOR_USERNAME: ${{ secrets.HARBOR_USERNAME }}
           HARBOR_PASSWORD: ${{ secrets.HARBOR_PASSWORD }} 
+        working-directory: charts
