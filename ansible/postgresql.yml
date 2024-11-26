@@ -67,8 +67,13 @@
       lineinfile:
         path: "/etc/postgresql/14/main/pg_hba.conf"  
         regexp: '^host\s+all\s+acajasbd\s+10.0.1.4/32\s+md5'
-        line: "host    all             acajasbd       0.0.0.0/0               md5"
+        line: "host    all             acajasbd        0.0.0.0/0               md5"
         state: present
+
+    - name: Reiniciar PosgreSQL
+      service:
+        name: postgresql
+        state: restarted
 
     # - name: Configurar la contraseña del usuario PostgreSQL
     #   become: true
