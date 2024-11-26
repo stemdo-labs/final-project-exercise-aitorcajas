@@ -46,7 +46,7 @@ jobs:
 
       - name: Push Chart backend
         run: |
-          helm push backend-${{steps.back_version.outputs.back_version}}.tgz oci://core.harbor.domain/acajas
+          helm push backend-${{steps.back_version.outputs.back_version}}.tgz https://harbor.codeops.es/harbor/projects/2/repositories
         env:
           HARBOR_USERNAME: ${{ secrets.HARBOR_USER }}
           HARBOR_PASSWORD: ${{ secrets.HARBOR_PASS }}
