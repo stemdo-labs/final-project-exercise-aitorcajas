@@ -136,3 +136,7 @@ jobs:
         else
           helm install ${{ needs.build.outputs.app_desarrollo }} oci://harbor.codeops.es/acajas/${{ needs.build.outputs.app_desarrollo }} -n default
         fi
+
+    - name: Listar
+      run: |
+        kubectl get all -n default
