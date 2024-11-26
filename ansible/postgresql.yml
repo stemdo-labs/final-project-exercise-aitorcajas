@@ -6,7 +6,7 @@
   vars:
     postgres_user: acajasbd
     postgres_db: acajasbd
-    # postgres_password: password
+    postgres_password: password
 
   tasks:
     - name: Actualizar el repositorio de paquetes
@@ -42,7 +42,7 @@
       become_user: postgres
       postgresql_user:
         name: "{{ postgres_user }}"
-        # password: "{{ postgres_password }}"
+        password: "{{ postgres_password }}"
         role_attr_flags: SUPERUSER
         state: present
 
@@ -51,6 +51,24 @@
       become_user: postgres
       shell: |
         psql -c "ALTER DATABASE {{ postgres_db }} OWNER TO {{ postgres_user }};"
+
+    - name: Configurar listen_addresses = '*' en postgresql.conf
+      become: yes
+      become_user: root
+      lineinfile:
+        path: "/etc/postgresql/14/main/postgresql.conf"  
+        regexp: '^#?listen_addresses ='
+        line: "listen_addresses = '*'"
+        state: present
+ 
+    - name: Configurar acceso en pg_hba.conf para acajasbd desde 10.0.1.4
+      become: yes
+      become_user: root
+      lineinfile:
+        path: "/etc/postgresql/14/main/pg_hba.conf"  
+        regexp: '^host\s+all\s+acajasbd\s+10.0.1.4/32\s+md5'
+        line: "host    all             acajasbd     0.0.0.0/0              md5"
+        state: present
 
     # - name: Configurar la contraseña del usuario PostgreSQL
     #   become: true

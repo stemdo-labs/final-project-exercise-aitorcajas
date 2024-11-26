@@ -41,3 +41,7 @@ variable "pip_name" {
 variable "location_cluster" {
   
 }
+
+variable "aks_nsg_name" {
+  
+}

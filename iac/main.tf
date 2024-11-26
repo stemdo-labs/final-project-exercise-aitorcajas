@@ -34,6 +34,7 @@ module "networks" {
   subnet_vm_name      = var.subnet_vm_name
   nsg_vm_name         = var.nsg_vm_name
   pip_name            = var.pip_name
+  aks_nsg_name        = var.aks_nsg_name
 }
 
 module "vms" {
