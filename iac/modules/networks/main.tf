@@ -82,14 +82,14 @@ resource "azurerm_network_security_group" "aks_nsg" {
   resource_group_name = var.rg_name
 
   security_rule {
-    name                        = "AllowPostgresFromK8s"
-    priority                    = 100
-    direction                   = "Outbound"
-    access                      = "Allow"
-    protocol                    = "Tcp"
-    source_port_range           = "*"
+    name                       = "AllowPostgresFromK8s"
+    priority                   = 100
+    direction                  = "Outbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
     destination_port_range     = "*"
-    source_address_prefix       = "*"
+    source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
 }

@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: deploy-backend
+  name: backend
 spec:
   selector:
     matchLabels:
-      app: backend-maven
+      app: backend
   replicas: 2
   template:
     metadata:
       labels:
-        app: backend-maven
+        app: backend
     spec:
       containers:
-      - name: backend-maven
+      - name: backend
         image: acajascr.azurecr.io/backend:1.0.0-SNAPSHOT
         envFrom:
         - secretRef:

@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: deploy-frontend
+  name: frontend
 spec:
   selector:
     matchLabels:
-      app: frontend-angular
+      app: frontend
   replicas: 2
   template:
     metadata:
       labels:
-        app: frontend-angular
+        app: frontend
     spec:
       containers:
-      - name: frontend-angular
+      - name: frontend
         image: acajascr.azurecr.io/frontend:1.0.1
         ports:
         - containerPort: 80
