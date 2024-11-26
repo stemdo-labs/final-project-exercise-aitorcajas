@@ -9,6 +9,10 @@ on:
           required: true
         ARM_TENANT_ID:
           required: true
+        HARBOR_USER:
+          required: true
+        HARBOR_PASS:
+          required: true
 
 jobs:
   build:
