@@ -44,4 +44,4 @@ La parte del CD una vez haya acabado el pusheo de la imagen correspondiente de b
 
 #### Notas
 
-Falta mejorar el despliegue de los charts para usar la imagen actualizada porque de momento uso siempre la misma imagen y falta acabar el disaster recovery más todo lo opcional.
+Falta mejorar el despliegue de los charts para usar la imagen actualizada porque de momento uso siempre la misma imagen y creo que sería mejor crear un reusable para el CI y otro para el CD y llamarlos desde un workflow principal a uno en cada job. También falta acabar el disaster recovery más todo lo opcional.
