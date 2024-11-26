@@ -69,8 +69,8 @@ resource "azurerm_kubernetes_cluster" "aks" {
 
 resource "azurerm_container_registry" "acajascr" {
   name                = var.cr_name
-  location            = var.location_cluster
+  location            = var.location
   resource_group_name = var.rg_name
-  sku                 = "Premium"
+  sku                 = "Basic"
   admin_enabled       = false
 }

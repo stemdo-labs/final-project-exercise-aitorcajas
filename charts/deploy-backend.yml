@@ -15,6 +15,9 @@ spec:
       containers:
       - name: backend-maven
         image: acajascr.azurecr.io/backend:1.0.0-SNAPSHOT
+        # envFrom:
+        # - secretRef:
+        #     name: secrets-service-principal
         # resources:
         #   limits:
         #     memory: "128Mi"
