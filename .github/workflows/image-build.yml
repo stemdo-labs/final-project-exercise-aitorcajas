@@ -122,4 +122,4 @@ jobs:
 
     - name: Instalar charts
       run: |
-        helm install ${{ needs.buils.outputs.app_desarrollo }} oci://harbor.codeops.es/acajas/${{ needs.buils.outputs.app_desarrollo }}
+        helm install ${{ needs.build.outputs.app_desarrollo }} oci://harbor.codeops.es/acajas/${{ needs.build.outputs.app_desarrollo }} -n default
