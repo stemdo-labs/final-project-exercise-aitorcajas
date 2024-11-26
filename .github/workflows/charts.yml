@@ -43,12 +43,8 @@ jobs:
         run: |
           helm registry login harbor.codeops.es -u ${{ secrets.HARBOR_USER }} -p ${{ secrets.HARBOR_PASS }}
 
-      - name: Push Chart backend
+      - name: Push de los Charts
         run: |
           helm push backend-${{steps.back_version.outputs.back_version}}.tgz oci://harbor.codeops.es/acajas
-        working-directory: charts     
-
-      - name: Push Chart frontend
-        run: |
           helm push frontend-${{steps.front_version.outputs.front_version}}.tgz oci://harbor.codeops.es/acajas
-        working-directory: charts
+        working-directory: charts     
