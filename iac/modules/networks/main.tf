@@ -17,6 +17,9 @@ resource "azurerm_virtual_network_peering" "peer_vm" {
   resource_group_name       = var.rg_name
   virtual_network_name      = azurerm_virtual_network.vnet_vm.name
   remote_virtual_network_id = azurerm_virtual_network.vnet_cluster.id
+
+  allow_forwarded_traffic      = true
+  allow_virtual_network_access = true
 }
 
 resource "azurerm_virtual_network_peering" "peer_cluster" {
@@ -24,6 +27,9 @@ resource "azurerm_virtual_network_peering" "peer_cluster" {
   resource_group_name       = var.rg_name
   virtual_network_name      = azurerm_virtual_network.vnet_cluster.name
   remote_virtual_network_id = azurerm_virtual_network.vnet_vm.id
+
+  allow_forwarded_traffic      = true
+  allow_virtual_network_access = true
 }
 
 resource "azurerm_subnet" "subnet_vm" {
@@ -52,8 +58,8 @@ resource "azurerm_network_security_group" "nsg_vm" {
     access                     = "Allow"
     protocol                   = "Tcp"
     source_port_range          = "*"
-    destination_port_range     = "22"
-    source_address_prefix      = "0.0.0.0/0"
+    destination_port_range     = "*"
+    source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
 }
@@ -68,6 +74,29 @@ resource "azurerm_public_ip" "pip" {
   location            = var.location
   resource_group_name = var.rg_name
   allocation_method   = "Dynamic"
+}
+
+resource "azurerm_network_security_group" "aks_nsg" {
+  name                = var.aks_nsg_name
+  location            = var.location_cluster
+  resource_group_name = var.rg_name
+
+  security_rule {
+    name                       = "AllowPostgresFromK8s"
+    priority                   = 100
+    direction                  = "Outbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "*"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+}
+
+resource "azurerm_subnet_network_security_group_association" "nsga_aks" {
+  subnet_id                 = azurerm_subnet.subnet_cluster.id
+  network_security_group_id = azurerm_network_security_group.aks_nsg.id
 }
 
 ### OUTPUTS

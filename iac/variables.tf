@@ -106,3 +106,9 @@ variable "location_cluster" {
   type = string
   description = "Localización para el cluster y su red"
 }
+
+variable "aks_nsg_name" {
+  type = string
+  description = "Nombre del grupo de seguridad de la subnet del cluster"
+  default = "aks-nsg"
+}

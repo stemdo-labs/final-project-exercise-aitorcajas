@@ -1,25 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: backend
+  name: frontend
 spec:
   selector:
     matchLabels:
-      app: backend
+      app: frontend
   replicas: 2
   template:
     metadata:
       labels:
-        app: backend
+        app: frontend
     spec:
       containers:
-      - name: backend
-        image: acajascr.azurecr.io/backend:1.0.0-SNAPSHOT
-        envFrom:
-        - secretRef:
-            name: secretos-backend
+      - name: frontend
+        image: acajascr.azurecr.io/frontend:1.0.1
         ports:
-        - containerPort: 8080
+        - containerPort: 80
       imagePullSecrets:
       - name: acr-secret
         # resources:
