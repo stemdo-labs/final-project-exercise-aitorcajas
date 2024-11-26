@@ -70,6 +70,11 @@
         line: "host    all             acajasbd        0.0.0.0/0               md5"
         state: present
 
+    - name: Reiniciar PosgreSQL
+      service:
+        name: postgresql
+        state: restarted
+
     # - name: Configurar la contraseña del usuario PostgreSQL
     #   become: true
     #   become_user: postgres
