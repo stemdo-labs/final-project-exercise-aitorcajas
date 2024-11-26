@@ -41,7 +41,7 @@ jobs:
 
       - name: Login Harbor
         run: |
-          helm registry login harbor.codeops.es -u ${{ secrets.HARBOR_USER }} -p ${{ HARBOR_PASS }}
+          helm registry login harbor.codeops.es -u ${{ secrets.HARBOR_USER }} -p ${{ secrets.HARBOR_PASS }}
 
       - name: Push Chart backend
         run: |
