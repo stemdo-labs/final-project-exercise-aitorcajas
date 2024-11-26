@@ -1,0 +1,5 @@
+#Nombre del namespace donde se desplegará
+namespace: default
+
+#Número de replicas
+replicas: 2
