@@ -18,9 +18,13 @@ spec:
         image: acajascr.azurecr.io/frontend:1.0.1
         ports:
         - containerPort: 80
+        resources:
+          limits:
+            memory: "400Mi"
+            cpu: "300m"
+          requests:
+            cpu: "100m"
+            memory: "200Mi"
       imagePullSecrets:
       - name: acr-secret
-        # resources:
-        #   limits:
-        #     memory: "128Mi"
-        #     cpu: "500m"
+        

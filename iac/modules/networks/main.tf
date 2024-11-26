@@ -76,29 +76,6 @@ resource "azurerm_public_ip" "pip" {
   allocation_method   = "Dynamic"
 }
 
-# resource "azurerm_network_security_group" "aks_nsg" {
-#   name                = var.aks_nsg_name
-#   location            = var.location_cluster
-#   resource_group_name = var.rg_name
-
-#   security_rule {
-#     name                       = "AllowPostgresFromK8s"
-#     priority                   = 100
-#     direction                  = "Outbound"
-#     access                     = "Allow"
-#     protocol                   = "Tcp"
-#     source_port_range          = "*"
-#     destination_port_range     = "*"
-#     source_address_prefix      = "*"
-#     destination_address_prefix = "*"
-#   }
-# }
-
-# resource "azurerm_subnet_network_security_group_association" "nsga_aks" {
-#   subnet_id                 = azurerm_subnet.subnet_cluster.id
-#   network_security_group_id = azurerm_network_security_group.aks_nsg.id
-# }
-
 ### OUTPUTS
 
 output "subnet_vm_id" {
