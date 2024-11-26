@@ -67,7 +67,7 @@ jobs:
 
   download:
     needs: build
-    runs-on: self-hosted
+    runs-on: runner-stemdo-labs
     steps:
     - name: Mostrar
       run: echo "${{steps.desarrollo.outputs.app_desarrollo}}"
