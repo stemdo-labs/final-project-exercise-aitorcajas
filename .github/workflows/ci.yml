@@ -14,14 +14,15 @@ on:
       #   HARBOR_PASS:
       #     required: true
     outputs:
-      version:
-        value: ${{ jobs.ci.outputs.app_desarrollo }}
+      imagen:
+        value: ${{ jobs.ci.outputs.imagen }}
 
 jobs:
   ci:
     runs-on: ubuntu-latest
     outputs:
       app_desarrollo: ${{steps.desarrollo.outputs.app_desarrollo}}
+      imagen: ${{steps.cargar_imagen.outputs.image_name}}
     steps:
       - name: Checkout del repositorio
         uses: actions/checkout@v3
