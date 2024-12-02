@@ -38,16 +38,16 @@ module "networks" {
 }
 
 module "vms" {
-  source       = "./modules/vms"
-  rg_name      = var.rg_name
-  location     = var.location
-  subnet_vm_id = module.networks.subnet_vm_id
-  pip_id       = module.networks.pip_id
-  nic_bd_name  = var.nic_bd_name
-  nic_dr_name  = var.nic_dr_name
-  vm_bd_name   = var.vm_bd_name
-  vm_dr_name   = var.vm_dr_name
-  depends_on   = [module.networks]
+  source   = "./modules/vms"
+  rg_name  = var.rg_name
+  location = var.location
+  # subnet_vm_id = module.networks.subnet_vm_id
+  pip_id      = module.networks.pip_id
+  nic_bd_name = var.nic_bd_name
+  nic_dr_name = var.nic_dr_name
+  vm_bd_name  = var.vm_bd_name
+  vm_dr_name  = var.vm_dr_name
+  depends_on  = [module.networks]
 }
 
 # resource "azurerm_kubernetes_cluster" "aks" {
