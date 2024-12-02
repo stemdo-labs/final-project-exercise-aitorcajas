@@ -16,7 +16,7 @@ on:
 
 jobs:
   build:
-    runs-on: runner-stemdo-labs
+    runs-on: ubuntu-latest
     outputs:
       app_desarrollo: ${{steps.desarrollo.outputs.app_desarrollo}}
     steps:
@@ -75,7 +75,7 @@ jobs:
 
   download:
     needs: build
-    runs-on: runner-stemdo-labs
+    runs-on: ubuntu-latest
     steps:
     - name: Instalar kubernetes
       run: |

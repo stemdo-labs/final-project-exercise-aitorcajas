@@ -5,18 +5,18 @@ resource "azurerm_virtual_network" "vnet_vm" {
   address_space       = ["10.0.0.0/16"]
 }
 
-resource "azurerm_virtual_network" "vnet_cluster" {
-  name                = var.vnet_cluster_name
-  location            = var.location_cluster
-  resource_group_name = var.rg_name
-  address_space       = ["10.1.0.0/16"]
-}
+# resource "azurerm_virtual_network" "vnet_cluster" {
+#   name                = var.vnet_cluster_name
+#   location            = var.location_cluster
+#   resource_group_name = var.rg_name
+#   address_space       = ["10.1.0.0/16"]
+# }
 
 resource "azurerm_virtual_network_peering" "peer_vm" {
   name                      = var.peer_vm_name
   resource_group_name       = var.rg_name
   virtual_network_name      = azurerm_virtual_network.vnet_vm.name
-  remote_virtual_network_id = azurerm_virtual_network.vnet_cluster.id
+  remote_virtual_network_id = "61e5e3f1-31b2-455d-b9bb-f6db5bee333c"
 
   allow_forwarded_traffic      = true
   allow_virtual_network_access = true
@@ -25,7 +25,7 @@ resource "azurerm_virtual_network_peering" "peer_vm" {
 resource "azurerm_virtual_network_peering" "peer_cluster" {
   name                      = var.peer_cluster_name
   resource_group_name       = var.rg_name
-  virtual_network_name      = azurerm_virtual_network.vnet_cluster.name
+  virtual_network_name      = "vnet-common-bootcamp"
   remote_virtual_network_id = azurerm_virtual_network.vnet_vm.id
 
   allow_forwarded_traffic      = true
@@ -39,12 +39,12 @@ resource "azurerm_subnet" "subnet_vm" {
   address_prefixes     = ["10.0.1.0/24"]
 }
 
-resource "azurerm_subnet" "subnet_cluster" {
-  name                 = var.subnet_cluster_name
-  resource_group_name  = var.rg_name
-  virtual_network_name = azurerm_virtual_network.vnet_cluster.name
-  address_prefixes     = ["10.1.1.0/24"]
-}
+# resource "azurerm_subnet" "subnet_cluster" {
+#   name                 = var.subnet_cluster_name
+#   resource_group_name  = var.rg_name
+#   virtual_network_name = azurerm_virtual_network.vnet_cluster.name
+#   address_prefixes     = ["10.1.1.0/24"]
+# }
 
 resource "azurerm_network_security_group" "nsg_vm" {
   name                = var.nsg_vm_name
