@@ -5,9 +5,9 @@ resource "azurerm_network_interface" "nic_bd" {
 
   ip_configuration {
     name                          = "ip-configuration-bd"
-    subnet_id                     = var.subnet_vm_id
+    subnet_id                     = "/subscriptions/86f76907-b9d5-46fa-a39d-aff8432a1868/resourceGroups/final-project-common/providers/Microsoft.Network/virtualNetworks/vnet-common-bootcamp/subnets/sn-acajas"
     private_ip_address_allocation = "Static"
-    private_ip_address = "10.0.1.4"
+    private_ip_address = "10.0.30.4"
   }
 }
 
@@ -18,9 +18,9 @@ resource "azurerm_network_interface" "nic_dr" {
 
   ip_configuration {
     name                          = "ip-configuration-dr"
-    subnet_id                     = var.subnet_vm_id
+    subnet_id                     = "/subscriptions/86f76907-b9d5-46fa-a39d-aff8432a1868/resourceGroups/final-project-common/providers/Microsoft.Network/virtualNetworks/vnet-common-bootcamp/subnets/sn-acajas"
     private_ip_address_allocation = "Static"
-    private_ip_address = "10.0.1.5"
+    private_ip_address = "10.0.30.5"
     public_ip_address_id          = var.pip_id
   }
 }

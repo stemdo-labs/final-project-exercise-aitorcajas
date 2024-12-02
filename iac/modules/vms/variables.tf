@@ -6,9 +6,9 @@ variable "location" {
 
 }
 
-variable "subnet_vm_id" {
+# variable "subnet_vm_id" {
   
-}
+# }
 
 variable "pip_id" {
   
