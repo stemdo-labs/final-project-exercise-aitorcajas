@@ -1,3 +1,3 @@
 rg_name = "rg-acajas-dvfinlab"
-location = "West Europe"
+location = "UK South"
 location_cluster = "North Europe"
