@@ -13,6 +13,9 @@ on:
       #     required: true
       #   HARBOR_PASS:
       #     required: true
+    outputs:
+      version:
+        value: ${{ jobs.ci.outputs.app_desarrollo }}
 
 jobs:
   ci:
