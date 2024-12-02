@@ -1,0 +1,142 @@
+name: Buildear imagen
+
+on:
+  workflow_call:
+      # secrets: 
+      #   ARM_CLIENT_ID: 
+      #     required: true
+      #   ARM_CLIENT_SECRET: 
+      #     required: true
+      #   ARM_TENANT_ID:
+      #     required: true
+      #   HARBOR_USER:
+      #     required: true
+      #   HARBOR_PASS:
+      #     required: true
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    outputs:
+      app_desarrollo: ${{steps.desarrollo.outputs.app_desarrollo}}
+    steps:
+      - name: Checkout del repositorio
+        uses: actions/checkout@v3
+
+      - name: Extraer versión
+        id: version
+        run: |
+          REPO_NAME=$(echo "${{ github.repository }}" | cut -d'/' -f2)
+          if [[ "$REPO_NAME" == *"backend"* ]]; then
+            VERSION=$(grep -oP '<version>\K[^\<]+' pom.xml | sed -n '2p')
+            echo "VERSION=$VERSION" >> $GITHUB_ENV
+            echo "app_version=$VERSION" >> $GITHUB_OUTPUT
+          elif [[ "$REPO_NAME" == *"frontend"* ]]; then
+            VERSION=$(jq -r '.version' package.json)
+            echo "VERSION=$VERSION" >> $GITHUB_ENV
+            echo "app_version=$VERSION" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Extraer desarrollo
+        id: desarrollo
+        run: |
+          REPO_NAME=$(echo "${{ github.repository }}" | cut -d'/' -f2)
+          if [[ "$REPO_NAME" == *"backend"* ]]; then
+            DESARROLLO="backend"
+            echo "DESARROLLO=$DESARROLLO" >> $GITHUB_ENV
+            echo "app_desarrollo=$DESARROLLO" >> $GITHUB_OUTPUT
+          elif [[ "$REPO_NAME" == *"frontend"* ]]; then
+            DESARROLLO="frontend"
+            echo "DESARROLLO=$DESARROLLO" >> $GITHUB_ENV
+            echo "app_desarrollo=$DESARROLLO" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Cargar el nombre de la imagen
+        id: cargar_imagen
+        uses: stemdo-labs/final-project-exercise-aitorcajas/.github/action@main
+        with:
+          version: ${{steps.version.outputs.app_version}}
+          desarrollo: ${{steps.desarrollo.outputs.app_desarrollo}}
+
+      - name: Build de la imagen
+        run: |
+          docker build -t ${{steps.cargar_imagen.outputs.image_name}} .
+
+      - name: Login Azure Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: acajascr.azurecr.io
+          username: ${{ secrets.ARM_CLIENT_ID }}
+          password: ${{ secrets.ARM_CLIENT_SECRET }}
+
+      - name: Push imagen ACR
+        run: |
+          docker push ${{steps.cargar_imagen.outputs.image_name}}
+
+  # download:
+  #   needs: build
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - name: Instalar kubernetes
+  #     run: |
+  #       curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+  #       sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+
+  #   - name: Comprobar versión de kubernetes
+  #     run: |
+  #       kubectl version --client
+
+  #   - name: Instalar az CLI
+  #     run: |
+  #       curl -sL https://aka.ms/InstallAzureCLIDeb| sudo bash
+
+  #   - name: AZ Login
+  #     run: |
+  #       az login --service-principal -u ${{ secrets.ARM_CLIENT_ID }} -p ${{ secrets.ARM_CLIENT_SECRET }} --tenant ${{ secrets.ARM_TENANT_ID }}
+
+  #   - name: AKS credentials
+  #     run: |
+  #       az aks get-credentials --resource-group rg-acajas-dvfinlab --name aks
+      
+  #   - name: ACR login
+  #     run: |
+  #       az acr login --name acajascr.azurecr.io
+      
+  #   - name: Crear secreto con las credenciales
+  #     run: |
+  #       if ! kubectl get secrets acr-secret -n default > /dev/null 2>&1; then
+  #         kubectl create secret docker-registry acr-secret --docker-server=acajascr.azurecr.io \
+  #         --docker-username=${{ secrets.ARM_CLIENT_ID }} --docker-password=${{ secrets.ARM_CLIENT_SECRET }} \
+  #         -n default
+  #       fi
+
+  #   - name: Instalar Helm
+  #     run: |
+  #       curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+  #       chmod 700 get_helm.sh
+  #       ./get_helm.sh
+
+  #   - name: Login Harbor
+  #     run: |
+  #       helm registry login harbor.codeops.es -u ${{ secrets.HARBOR_USER }} -p ${{ secrets.HARBOR_PASS }}
+
+  #   - name: Verificar si la release existe
+  #     id: check_release
+  #     run: |
+  #       if helm status ${{ needs.build.outputs.app_desarrollo }} -n default > /dev/null 2>&1; then
+  #         echo "exists=true" >> $GITHUB_OUTPUT
+  #       else
+  #         echo "exists=false" >> $GITHUB_OUTPUT
+  #       fi
+
+  #   - name: Instalar o actualizar Helm Chart
+  #     run: |
+  #       if [ "${{ steps.check_release.outputs.exists }}" == "true" ]; then
+  #         helm upgrade ${{ needs.build.outputs.app_desarrollo }} oci://harbor.codeops.es/acajas/${{ needs.build.outputs.app_desarrollo }} -n default
+  #       else
+  #         helm install ${{ needs.build.outputs.app_desarrollo }} oci://harbor.codeops.es/acajas/${{ needs.build.outputs.app_desarrollo }} -n default
+  #       fi
+
+  #   - name: Listar
+  #     run: |
+  #       kubectl get all -n default

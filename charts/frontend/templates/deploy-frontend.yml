@@ -15,16 +15,16 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: acajascr.azurecr.io/frontend:1.0.1
+        image: {{.Values.image}}
         ports:
         - containerPort: 80
         resources:
           limits:
-            memory: "400Mi"
-            cpu: "300m"
+            memory: {{.Values.recursos.limites.memoria}}
+            cpu: {{.Values.recursos.limites.cpu}}
           requests:
-            cpu: "100m"
-            memory: "200Mi"
+            cpu: {{.Values.recursos.requests.cpu}}
+            memory: {{.Values.recursos.requests.memoria}}
       imagePullSecrets:
       - name: acr-secret
         

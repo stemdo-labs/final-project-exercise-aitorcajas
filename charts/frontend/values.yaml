@@ -3,3 +3,15 @@ namespace: default
 
 #Número de replicas
 replicas: 1
+
+# Imagen
+image: acajascr.azurecr.io/frontend:1.0.1
+
+# Recursos
+recursos:
+  limites:
+    memoria: "400Mi"
+    cpu: "300m"
+  requests:
+    memoria: "200Mi"
+    cpu: "100m"
