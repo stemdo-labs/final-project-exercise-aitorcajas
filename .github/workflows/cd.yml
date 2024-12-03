@@ -62,10 +62,11 @@ jobs:
       run: |
         helm registry login harbor.codeops.es -u ${{ secrets.HARBOR_USER }} -p ${{ secrets.HARBOR_PASS }}
 
-    - name: Verificar si la release existe
+    - name: Instalar chart
       id: check_release
       run: |
         helm upgrade --install ${{ inputs.desarrollo }} oci://harbor.codeops.es/acajas/${{ inputs.desarrollo }} -f values.yml -n ns-acajas
+      working-directory: templates
 
     - name: Listar
       run: |
