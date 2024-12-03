@@ -22,8 +22,8 @@ jobs:
       
       - name: Mover brew a PATH
         run: |
-          echo >> /home/user/.bashrc
-          echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /home/user/.bashrc
+          echo >> /home/runner/.bashrc
+          echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /home/runner/.bashrc
           eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
       - name: Instalar kubelogin
