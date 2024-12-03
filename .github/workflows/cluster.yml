@@ -2,41 +2,41 @@ name: Conectar cluster
 
 on:
   workflow_dispatch:
-    
+
 jobs:
   cluster:
     runs-on: ubuntu-latest
     steps:
-    - name: Instalar kubernetes
-      run: |
-        curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-        sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+      - name: Instalar kubernetes
+        run: |
+          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+          sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 
-    - name: Instalar az CLI
-      run: |
-        curl -sL https://aka.ms/InstallAzureCLIDeb| sudo bash8
+      - name: Instalar az CLI
+        run: |
+          curl -sL https://aka.ms/InstallAzureCLIDeb| sudo bash
 
-    - name: Instalar kubelogin
-      run: |
-        sudo apt install snap
-        sudo snap install kubelogin
+      - name: Instalar kubelogin
+        run: |
+          sudo apt install snap
+          sudo snap install kubelogin
 
-    - name: AZ Login
-      run: |
-        az login --service-principal -u ${{ secrets.ARM_CLIENT_ID }} -p ${{ secrets.ARM_CLIENT_SECRET }} --tenant ${{ secrets.ARM_TENANT_ID }}
+      - name: AZ Login
+        run: |
+          az login --service-principal -u ${{ secrets.ARM_CLIENT_ID }} -p ${{ secrets.ARM_CLIENT_SECRET }} --tenant ${{ secrets.ARM_TENANT_ID }}
 
-    - name: AKS credentials
-      run: |
-        az account set --subscription ${{ secrets.ARM_SUBSCRIPTION_ID }}
+      - name: AKS credentials
+        run: |
+          az account set --subscription ${{ secrets.ARM_SUBSCRIPTION_ID }}
 
-    - name: AKS credentials
-      run: |
-        az aks get-credentials --resource-group final-project-common --name aksbootcampwe01 --overwrite-existing
+      - name: AKS credentials
+        run: |
+          az aks get-credentials --resource-group final-project-common --name aksbootcampwe01 --overwrite-existing
 
-    - name: AKS credentials
-      run: |
-        kubelogin convert-kubeconfig -l azurecli
+      - name: AKS credentials
+        run: |
+          kubelogin convert-kubeconfig -l azurecli
 
-    - name: Listar
-      run: |
-        kubectl get deployments --namespace ns-acajas
+      - name: Listar
+        run: |
+          kubectl get deployments --namespace ns-acajas
