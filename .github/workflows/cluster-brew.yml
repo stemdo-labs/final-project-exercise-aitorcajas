@@ -14,30 +14,28 @@ jobs:
 
       - name: Instalar az CLI
         run: |
-          curl -sL https://aka.ms/InstallAzureCLIDeb| sudo bash
+          curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
 
       - name: Instalar brew
         run: |
           /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-      
-      - name: Mover brew a PATH
-        run: |
-          echo >> /home/runner/.bashrc
-          echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /home/runner/.bashrc
-          eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+          echo "eval \"\$($(brew --prefix)/bin/brew shellenv)\"" >> $GITHUB_ENV
 
       - name: Instalar dependencias de brew
         run: |
           sudo apt-get install build-essential
-          sudo brew install gcc
+          eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+          brew install gcc
 
       - name: Comprobar instalación de brew
         run: |
-          sudo brew --version
+          eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+          brew --version
 
       - name: Instalar kubelogin
         run: |
-          sudo brew install kubelogin
+          eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+          brew install kubelogin
 
       - name: AZ Login
         run: |
@@ -53,6 +51,7 @@ jobs:
 
       - name: AKS credentials
         run: |
+          eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
           kubelogin convert-kubeconfig -l azurecli
 
       - name: Listar
