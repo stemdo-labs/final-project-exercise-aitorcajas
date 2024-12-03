@@ -18,22 +18,14 @@ jobs:
 
       - name: Instalar brew
         run: |
-          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-      
-      - name: Mover brew a PATH
-        run: |
-          echo >> /home/runner/.bashrc
-          echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /home/runner/.bashrc
-          eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-
-      - name: Instalar dependencias de brew
-        run: |
-          sudo apt-get install build-essential
-          sudo brew install gcc
-
+          sudo apt install build-essential curl file git
+          test -d ~/.linuxbrew && eval $(~/.linuxbrew/bin/brew shellenv)
+          test -d /home/linuxbrew/.linuxbrew && eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
+          echo "eval \$($(brew --prefix)/bin/brew shellenv)" >>~/.profile
+    
       - name: Comprobar instalación de brew
         run: |
-          sudo brew --version
+          brew --version
 
       - name: Instalar kubelogin
         run: |
