@@ -16,10 +16,16 @@ jobs:
         run: |
           curl -sL https://aka.ms/InstallAzureCLIDeb| sudo bash
 
+      - name: Instalar brew
+        run: |
+          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+          echo >> /home/user/.bashrc
+          echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /home/user/.bashrc
+          eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+
       - name: Instalar kubelogin
         run: |
-          sudo apt install snap
-          sudo snap install kubelogin
+          brew install kubelogin
 
       - name: AZ Login
         run: |
