@@ -26,6 +26,10 @@ jobs:
           echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /home/runner/.bashrc
           eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
+      - name: Comprobar instalación de brew
+        run: |
+          brew --version
+
       - name: Instalar kubelogin
         run: |
           brew install kubelogin
