@@ -29,15 +29,15 @@ jobs:
       - name: Instalar dependencias de brew
         run: |
           sudo apt-get install build-essential
-          brew install gcc
+          sudo brew install gcc
 
       - name: Comprobar instalación de brew
         run: |
-          brew --version
+          sudo brew --version
 
       - name: Instalar kubelogin
         run: |
-          brew install kubelogin
+          sudo brew install kubelogin
 
       - name: AZ Login
         run: |
