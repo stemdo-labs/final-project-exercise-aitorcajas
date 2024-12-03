@@ -16,28 +16,9 @@ jobs:
         run: |
           curl -sL https://aka.ms/InstallAzureCLIDeb| sudo bash
 
-      - name: Instalar brew
-        run: |
-          sudo apt install build-essential curl file git
-          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
-          test -d ~/.linuxbrew && eval $(~/.linuxbrew/bin/brew shellenv)
-          test -d /home/linuxbrew/.linuxbrew && eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
-          echo "eval \$($(brew --prefix)/bin/brew shellenv)" >>~/.profile
-          echo >> /home/runner/.bashrc
-          echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /home/runner/.bashrc
-          eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-          sudo apt-get install build-essential
-          brew install gcc
-    
-      - name: Comprobar instalación de brew
-        run: |
-          eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-          brew --version
-
       - name: Instalar kubelogin
         run: |
-          eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-          brew install kubelogin
+          sudo az aks install-cli
 
       - name: AZ Login
         run: |
@@ -57,4 +38,4 @@ jobs:
 
       - name: Listar
         run: |
-          sudo kubectl get deployments --namespace ns-acajas
+          kubectl get deployments --namespace ns-acajas
