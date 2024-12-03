@@ -4,14 +4,13 @@ on:
   workflow_call:
     outputs:
       imagen:
-        value: ${{ jobs.ci.outputs.imagen }}
+        desarrollo: ${{ jobs.ci.outputs.app_desarrollo }}
 
 jobs:
   ci:
     runs-on: ubuntu-latest
     outputs:
       app_desarrollo: ${{steps.desarrollo.outputs.app_desarrollo}}
-      imagen: ${{steps.cargar_imagen.outputs.image_name}}
     steps:
       - name: Checkout del repositorio
         uses: actions/checkout@v3

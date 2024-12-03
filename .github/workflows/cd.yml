@@ -3,7 +3,7 @@ name: CD
 on:
   workflow_call:
     inputs:
-      imagen:
+      desarrollo:
         type: string
         required: true
     
@@ -16,21 +16,29 @@ jobs:
         curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
         sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 
-    - name: Comprobar versión de kubernetes
-      run: |
-        kubectl version --client
-
     - name: Instalar az CLI
       run: |
         curl -sL https://aka.ms/InstallAzureCLIDeb| sudo bash
+
+    - name: Instalar kubelogin
+      run: |
+        sudo az aks install-cli
 
     - name: AZ Login
       run: |
         az login --service-principal -u ${{ secrets.ARM_CLIENT_ID }} -p ${{ secrets.ARM_CLIENT_SECRET }} --tenant ${{ secrets.ARM_TENANT_ID }}
 
+    - name: Setear subscripción
+      run: |
+        az account set --subscription ${{ secrets.ARM_SUBSCRIPTION_ID }}
+
     - name: AKS credentials
       run: |
-        az aks get-credentials --resource-group rg-acajas-dvfinlab --name aks
+        az aks get-credentials --resource-group final-project-common --name aksbootcampwe01 --overwrite-existing
+
+    - name: Kubelogin
+      run: |
+        kubelogin convert-kubeconfig -l azurecli
       
     - name: ACR login
       run: |
@@ -38,10 +46,10 @@ jobs:
       
     - name: Crear secreto con las credenciales
       run: |
-        if ! kubectl get secrets acr-secret -n default > /dev/null 2>&1; then
+        if ! kubectl get secrets acr-secret -n ns-acajas > /dev/null 2>&1; then
           kubectl create secret docker-registry acr-secret --docker-server=acajascr.azurecr.io \
           --docker-username=${{ secrets.ARM_CLIENT_ID }} --docker-password=${{ secrets.ARM_CLIENT_SECRET }} \
-          -n default
+          -n ns-acajas
         fi
 
     - name: Instalar Helm
@@ -57,20 +65,9 @@ jobs:
     - name: Verificar si la release existe
       id: check_release
       run: |
-        if helm status ${{ needs.build.outputs.app_desarrollo }} -n default > /dev/null 2>&1; then
-          echo "exists=true" >> $GITHUB_OUTPUT
-        else
-          echo "exists=false" >> $GITHUB_OUTPUT
-        fi
-
-    - name: Instalar o actualizar Helm Chart
-      run: |
-        if [ "${{ steps.check_release.outputs.exists }}" == "true" ]; then
-          helm upgrade ${{ needs.build.outputs.app_desarrollo }} oci://harbor.codeops.es/acajas/${{ needs.build.outputs.app_desarrollo }} -n default
-        else
-          helm install ${{ needs.build.outputs.app_desarrollo }} oci://harbor.codeops.es/acajas/${{ needs.build.outputs.app_desarrollo }} -n default
-        fi
+        helm upgrade --install ${{ inputs.desarrollo }} oci://harbor.codeops.es/acajas/${{ inputs.desarrollo }} -f values.yml -n ns-acajas
 
     - name: Listar
       run: |
-        kubectl get all -n default
+        sleep 10s
+        kubectl get all -n ns-acajas
