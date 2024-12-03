@@ -3,16 +3,21 @@
   hosts: localhost
   become: yes
   vars:
-    backup_file: "/tmp/backup.sql.gz"
+    backup_file: "/tmp/backup.sql"
     db_name: "acajasbd"
     db_user: "acajasbd"
+    pass: "password"
 
   tasks:
-    - name: Copiar archivo a la máquina remota
-      ansible.builtin.copy:
-        src: "{{ backup_file }}"
-        dest: "{{ backup_file }}"
-        mode: '0777'
+    # - name: Copiar archivo a la máquina remota
+    #   ansible.builtin.copy:
+    #     src: "{{ backup_file }}"
+    #     dest: "{{ backup_file }}"
+    #     mode: '0777'
+
+    - name: Descifrar archivo
+      bebug:
+        run: openssl enc -d -aes-256-cbc -salt -in /tmp/backup.sql.gz -out /tmp/backup.sql -pass pass:{{pass}}
   
     - name: "Restore the database"
       postgresql_db:
