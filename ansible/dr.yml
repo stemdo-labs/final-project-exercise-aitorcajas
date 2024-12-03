@@ -16,8 +16,7 @@
     #     mode: '0777'
 
     - name: Descifrar archivo
-      bebug:
-        run: openssl enc -d -aes-256-cbc -salt -in /tmp/backup.sql.gz -out /tmp/backup.sql -pass pass:{{encryption_key}}
+      shell: openssl enc -d -aes-256-cbc -salt -in /tmp/backup.sql.gz -out /tmp/backup.sql -pass pass:{{encryption_key}}
   
     - name: "Restore the database"
       postgresql_db:
