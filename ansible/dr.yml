@@ -6,7 +6,7 @@
     backup_file: "/tmp/backup.sql"
     db_name: "acajasbd"
     db_user: "acajasbd"
-    pass: "password"
+    encryption_key: "password"
 
   tasks:
     # - name: Copiar archivo a la máquina remota
@@ -17,7 +17,7 @@
 
     - name: Descifrar archivo
       bebug:
-        run: openssl enc -d -aes-256-cbc -salt -in /tmp/backup.sql.gz -out /tmp/backup.sql -pass pass:{{pass}}
+        run: openssl enc -d -aes-256-cbc -salt -in /tmp/backup.sql.gz -out /tmp/backup.sql -pass pass:{{encryption_key}}
   
     - name: "Restore the database"
       postgresql_db:
