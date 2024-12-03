@@ -23,6 +23,11 @@ jobs:
           test -d ~/.linuxbrew && eval $(~/.linuxbrew/bin/brew shellenv)
           test -d /home/linuxbrew/.linuxbrew && eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
           echo "eval \$($(brew --prefix)/bin/brew shellenv)" >>~/.profile
+          echo >> /home/runner/.bashrc
+          echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /home/runner/.bashrc
+          eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+          sudo apt-get install build-essential
+          brew install gcc
     
       - name: Comprobar instalación de brew
         run: |
