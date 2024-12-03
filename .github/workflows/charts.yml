@@ -1,11 +1,12 @@
 name: Subir charts de Helm
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'charts/**'
+  workflow_dispatch:
+  # push:
+  #   branches:
+  #     - main
+  #   paths:
+  #     - 'charts/**'
     
 jobs:
   subir:
