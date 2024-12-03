@@ -26,6 +26,11 @@ jobs:
           echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /home/runner/.bashrc
           eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
+      - name: Instalar dependencias de brew
+        run: |
+          sudo apt-get install build-essential
+          brew install gcc
+
       - name: Comprobar instalación de brew
         run: |
           brew --version
