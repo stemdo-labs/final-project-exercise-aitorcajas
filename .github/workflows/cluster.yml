@@ -31,10 +31,12 @@ jobs:
     
       - name: Comprobar instalación de brew
         run: |
+          eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
           brew --version
 
       - name: Instalar kubelogin
         run: |
+          eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
           brew install kubelogin
 
       - name: AZ Login
