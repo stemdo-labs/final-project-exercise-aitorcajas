@@ -71,7 +71,10 @@ jobs:
         helm upgrade --install ${{ inputs.desarrollo }} oci://harbor.codeops.es/acajas/${{ inputs.desarrollo }} -f values.yml -n ns-acajas
       working-directory: templates
 
-    - name: Listar
+    - name: Esperar
       run: |
         sleep 10s
+
+    - name: Listar
+      run: |
         kubectl get all -n ns-acajas
