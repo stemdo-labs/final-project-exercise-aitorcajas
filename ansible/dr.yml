@@ -7,6 +7,7 @@
     db_name: "acajasbd"
     db_user: "acajasbd"
     encryption_key: "password"
+    db_password: password
 
   tasks:
     # - name: Copiar archivo a la máquina remota
@@ -29,7 +30,7 @@
     - name: Verificar la restauración
       become: true
       shell: |
-        psql -U {{ db_user }} -d {{ db_name }} -c "\dt"
+        psql "postgresql://{{ db_user }}:{{ db_password }}@localhost:5432/{{ db_name }}" -c "\dt"
       register: restore_check
       args:
         executable: /bin/bash
