@@ -1,6 +1,6 @@
 ---
 - name: Backup de base de datos PostgreSQL y subida a Azure Blob Storage
-  hosts: [bd]
+  hosts: localhost
   become: true
   vars:
     postgres_db: "acajasbd"

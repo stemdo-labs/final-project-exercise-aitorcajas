@@ -1,6 +1,6 @@
 ---
 - name: Descargar y restaurar base de datos PostgreSQL desde copia de seguridad
-  hosts: [bd]
+  hosts: localhost
   become: yes
   vars:
     backup_file: "/tmp/backup.sql.gz"
