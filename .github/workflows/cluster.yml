@@ -39,4 +39,4 @@ jobs:
 
       - name: Listar
         run: |
-          kubectl get deployments --namespace ns-acajas
+          sudo kubectl get deployments --namespace ns-acajas
