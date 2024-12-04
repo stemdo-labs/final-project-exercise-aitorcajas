@@ -13,7 +13,7 @@
     - name: Realizar dump de la base de datos PostgreSQL
       become: yes
       become_user: postgres
-      shell: PGPASSWORD={{ db_password }} pg_dump -U {{ postgres_user }} {{ postgres_db }} > /tmp/{{ postgres_db }}-backup.sql
+      shell: pg_dump -U {{ postgres_user }} {{ postgres_db }} > /tmp/{{ postgres_db }}-backup.sql
       args:
         creates: "/tmp/{{ postgres_db }}-backup.sql"
 
