@@ -39,7 +39,7 @@
     #     dest: "{{ local_backup_path }}"
     #     flat: yes
     
-    - name: Eliminar el archivo de backup local
-      file:
-        path: "{{ backup_file }}"
-        state: absent
+    # - name: Eliminar el archivo de backup local
+    #   file:
+    #     path: "{{ backup_file }}"
+    #     state: absent

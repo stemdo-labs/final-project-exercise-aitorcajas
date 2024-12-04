@@ -43,11 +43,6 @@
       args:
         executable: /bin/bash
 
-    - name: Eliminar el archivo de backup local
-      file:
-        path: "{{ backup_file }}"
-        state: absent
-
     # - name: Borrar directorio en la máquina de control
     #   delegate_to: localhost
     #   ansible.builtin.command:
@@ -56,3 +51,8 @@
     - name: Mostrar resultado de la restauración
       debug:
         msg: "Tablas restauradas: {{ restore_check.stdout_lines }}"
+
+    - name: Eliminar el archivo de backup local
+      file:
+        path: "{{ backup_file }}"
+        state: absent
