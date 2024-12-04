@@ -16,8 +16,8 @@
     #     dest: "{{ backup_file }}"
     #     mode: '0777'
 
-    # - name: Descifrar archivo
-    #   shell: openssl enc -d -aes-256-cbc -salt -in /tmp/backup.sql.gz -out {{ backup_file }} -pass pass:{{encryption_key}}
+    - name: Descifrar archivo
+      shell: openssl enc -d -aes-256-cbc -salt -in /tmp/backup.sql.gz.enc -out /tmp/backup.sql.gz -pass pass:{{encryption_key}}
 
     - name: Descomprimir
       shell: gzip -d /tmp/backup.sql.gz
@@ -32,7 +32,7 @@
   
     - name: "Restore the database using psql"
       command: >
-        psql -U postgres -d {{ db_name }} -f {{ backup_file }}
+        psql -U postgres -d {{ db_name }} -f /tmp/backup.sql
       become: yes
       become_user: postgres
       environment:

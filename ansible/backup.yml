@@ -24,10 +24,14 @@
         creates: "/tmp/{{ postgres_db }}-backup.sql.gz"
 
     - name: Cifrar el archivo de volcado comprimido
-      shell: openssl enc -aes-256-cbc -salt -in /tmp/{{ postgres_db }}-backup.sql.gz -out {{ backup_file }} -k "{{ encryption_key }}"
+      shell: openssl enc -aes-256-cbc -salt -in /tmp/{{ postgres_db }}-backup.sql.gz -out /tmp/{{ postgres_db }}-backup.sql.gz.enc -k "{{ encryption_key }}"
       args:
         creates: "{{ backup_file }}"
 
+    - name: Eliminar el archivo de backup local
+      file:
+        path: "/tmp/{{ postgres_db }}-backup.sql.gz"
+        state: absent
 
     # - name: Verificar si el archivo de backup fue creado y cifrado
     #   stat:
@@ -51,8 +55,3 @@
     #     src: "{{ backup_file }}"
     #     dest: "{{ local_backup_path }}"
     #     flat: yes
-    
-    # - name: Eliminar el archivo de backup local
-    #   file:
-    #     path: "{{ backup_file }}"
-    #     state: absent
