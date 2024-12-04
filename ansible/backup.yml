@@ -15,23 +15,14 @@
       become: yes
       become_user: "{{ postgres_user }}"
       shell: pg_dump -U {{ postgres_user }} {{ postgres_db }} > /tmp/{{ postgres_db }}-backup.sql
-      args:
-        creates: "/tmp/{{ postgres_db }}-backup.sql"
 
     - name: Comprimir el archivo de volcado
       shell: gzip /tmp/{{ postgres_db }}-backup.sql
-      args:
-        creates: "/tmp/{{ postgres_db }}-backup.sql.gz"
 
-    - name: Cifrar el archivo de volcado comprimido
-      shell: openssl enc -aes-256-cbc -salt -in /tmp/{{ postgres_db }}-backup.sql.gz -out /tmp/{{ postgres_db }}-backup.sql.gz.enc -k "{{ encryption_key }}"
-      args:
-        creates: "{{ backup_file }}"
-
-    - name: Eliminar el archivo de backup local
-      file:
-        path: "/tmp/{{ postgres_db }}-backup.sql.gz"
-        state: absent
+    # - name: Eliminar el archivo de backup local
+    #   file:
+    #     path: "/tmp/{{ postgres_db }}-backup.sql.gz"
+    #     state: absent
 
     # - name: Verificar si el archivo de backup fue creado y cifrado
     #   stat:
