@@ -18,6 +18,14 @@
 
     - name: Descifrar archivo
       shell: openssl enc -d -aes-256-cbc -salt -in /tmp/backup.sql.gz -out /tmp/backup.sql -pass pass:{{encryption_key}}
+
+    - name: "Create the database if it does not exist"
+      postgresql_db:
+        state: present
+        name: "{{ db_name }}"
+        owner: "{{ db_user }}"
+      become: yes
+      become_user: postgres
   
     - name: "Restore the database"
       postgresql_db:
@@ -40,10 +48,10 @@
         path: "{{ backup_file }}"
         state: absent
 
-    - name: Borrar directorio en la máquina de control
-      delegate_to: localhost
-      ansible.builtin.command:
-        cmd: rm -rf "{{ backup_file }}"
+    # - name: Borrar directorio en la máquina de control
+    #   delegate_to: localhost
+    #   ansible.builtin.command:
+    #     cmd: rm -rf "{{ backup_file }}"
 
     - name: Mostrar resultado de la restauración
       debug:
