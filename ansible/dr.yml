@@ -1,45 +1,62 @@
 ---
 - name: Descargar y restaurar base de datos PostgreSQL desde copia de seguridad
-  hosts: [bd]
+  hosts: localhost
   become: yes
   vars:
-    backup_file: "/tmp/backup.sql.gz"
     db_name: "acajasbd"
     db_user: "acajasbd"
+    db_password: password
 
   tasks:
-    - name: Copiar archivo a la máquina remota
-      ansible.builtin.copy:
-        src: "{{ backup_file }}"
-        dest: "{{ backup_file }}"
-        mode: '0777'
+    # - name: Copiar archivo a la máquina remota
+    #   ansible.builtin.copy:
+    #     src: "{{ backup_file }}"
+    #     dest: "{{ backup_file }}"
+    #     mode: '0777'
+
+    - name: Descomprimir
+      shell: gzip -d /tmp/backup.sql.gz
+
+    # - name: "Crear la base de datos si no existe"
+    #   postgresql_db:
+    #     state: present
+    #     name: "{{ db_name }}"
+    #     owner: "{{ db_user }}"
+    #   become: yes
+    #   become_user: postgres
   
-    - name: "Restore the database"
-      postgresql_db:
-        state: restore
-        name: "{{db_name}}"
-        target: "{{backup_file}}"
+    - name: "Restore the database using psql"
+      command: >
+        psql -U postgres -d {{ db_name }} -f /tmp/backup.sql
       become: yes
       become_user: postgres
+      environment:
+        PGPASSWORD: "{{ db_password }}"
+
 
     - name: Verificar la restauración
       become: true
       shell: |
-        psql -U {{ db_user }} -d {{ db_name }} -c "\dt"
+        psql "postgresql://{{ db_user }}:{{ db_password }}@localhost:5432/{{ db_name }}" -c "\dt"
       register: restore_check
       args:
         executable: /bin/bash
 
-    - name: Eliminar el archivo de backup local
-      file:
-        path: "{{ backup_file }}"
-        state: absent
-
-    - name: Borrar directorio en la máquina de control
-      delegate_to: localhost
-      ansible.builtin.command:
-        cmd: rm -rf "{{ backup_file }}"
+    # - name: Borrar directorio en la máquina de control
+    #   delegate_to: localhost
+    #   ansible.builtin.command:
+    #     cmd: rm -rf "{{ backup_file }}"
 
     - name: Mostrar resultado de la restauración
       debug:
         msg: "Tablas restauradas: {{ restore_check.stdout_lines }}"
+
+    - name: Eliminar el archivo de backup local
+      file:
+        path: "/tmp/backup.sql"
+        state: absent
+
+    - name: Eliminar el archivo de backup local
+      file:
+        path: "/tmp/backup.sql.gz.enc"
+        state: absent

@@ -15,7 +15,10 @@ jobs:
 
   - name: Descargar el backup desde Azure utilizando la clave de la cuenta
     run: |
-      az storage blob download --account-name staacajasdvfinlab -f /tmp/backup.sql.gz -c backup -n acajasbd-backup.sql.gz
+      az storage blob download --account-name staacajasdvfinlab -f /tmp/backup.sql.gz.enc -c backup -n acajasbd-backup.sql.gz.enc
+
+  - name: Desencriptar el archivo
+    run: openssl enc -d -aes-256-cbc -salt -in /tmp/backup.sql.gz.enc -out /tmp/backup.sql.gz -pass pass:${{ secrets.ENC_KEY }}
 
   - name: Ejecutar playbook para hacer el DR
     run: |
