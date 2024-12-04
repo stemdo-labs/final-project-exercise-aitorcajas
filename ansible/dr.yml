@@ -3,7 +3,7 @@
   hosts: localhost
   become: yes
   vars:
-    backup_file: "/tmp/backup.sql"
+    backup_file: "/tmp/backup-desc.sql.gz"
     db_name: "acajasbd"
     db_user: "acajasbd"
     encryption_key: "password"
