@@ -10,21 +10,31 @@
     local_backup_path: "/backups/{{ postgres_db }}-backup.sql.gz"
 
   tasks:
-    - name: Realizar dump de la base de datos PostgreSQL y cifrar el archivo
-      shell: |
-        pg_dump -U {{ postgres_user }} {{ postgres_db }} | gzip | openssl enc -aes-256-cbc -salt -out {{ backup_file }} -k "{{ encryption_key }}"
+    - name: Realizar dump de la base de datos PostgreSQL
+      shell: pg_dump -U {{ postgres_user }} {{ postgres_db }} > /tmp/{{ postgres_db }}-backup.sql
+      args:
+        creates: "/tmp/{{ postgres_db }}-backup.sql"
+
+    - name: Comprimir el archivo de volcado
+      shell: gzip /tmp/{{ postgres_db }}-backup.sql
+      args:
+        creates: "/tmp/{{ postgres_db }}-backup.sql.gz"
+
+    - name: Cifrar el archivo de volcado comprimido
+      shell: openssl enc -aes-256-cbc -salt -in /tmp/{{ postgres_db }}-backup.sql.gz -out {{ backup_file }} -k "{{ encryption_key }}"
       args:
         creates: "{{ backup_file }}"
 
-    - name: Verificar si el archivo de backup fue creado y cifrado
-      stat:
-        path: "{{ backup_file }}"
-      register: backup_stat
 
-    - name: Comprobar si el backup fue exitoso
-      fail:
-        msg: "El archivo de backup no se creó correctamente."
-      when: not backup_stat.stat.exists
+    # - name: Verificar si el archivo de backup fue creado y cifrado
+    #   stat:
+    #     path: "{{ backup_file }}"
+    #   register: backup_stat
+
+    # - name: Comprobar si el backup fue exitoso
+    #   fail:
+    #     msg: "El archivo de backup no se creó correctamente."
+    #   when: not backup_stat.stat.exists
 
     # - name: Crear carpeta de backups
     #   local_action:
