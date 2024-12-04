@@ -16,9 +16,6 @@
     #     dest: "{{ backup_file }}"
     #     mode: '0777'
 
-    - name: Descifrar archivo
-      shell: openssl enc -d -aes-256-cbc -salt -in /tmp/backup.sql.gz.enc -out /tmp/backup.sql.gz -pass pass:{{encryption_key}}
-
     - name: Descomprimir
       shell: gzip -d /tmp/backup.sql.gz
 
