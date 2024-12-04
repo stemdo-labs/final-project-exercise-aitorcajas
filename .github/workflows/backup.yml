@@ -26,3 +26,8 @@ jobs:
   - name: Subir backup
     run: |
       az storage blob upload --account-name staacajasdvfinlab --container-name backup --file /tmp/acajasbd-backup.sql.gz.enc --name acajasbd-backup.sql.gz.enc --overwrite
+
+  - name: Eliminar archivos
+    run: |
+      sudo rm /tmp/acajasbd-backup.sql.gz.enc
+      sudo rm /tmp/acajasbd-backup.sql.gz

@@ -5,9 +5,7 @@
   vars:
     postgres_db: "acajasbd"
     postgres_user: "acajasbd"
-    backup_file: "/tmp/{{ postgres_db }}-backup.sql.gz"
-    encryption_key: "password"
-    local_backup_path: "/backups/{{ postgres_db }}-backup.sql.gz"
+    # local_backup_path: "/backups/{{ postgres_db }}-backup.sql.gz"
     postgres_password: "password"
 
   tasks:
