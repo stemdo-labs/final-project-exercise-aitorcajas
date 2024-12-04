@@ -8,12 +8,13 @@
     backup_file: "/tmp/{{ postgres_db }}-backup.sql.gz"
     encryption_key: "password"
     local_backup_path: "/backups/{{ postgres_db }}-backup.sql.gz"
+    postgres_password: "password"
 
   tasks:
     - name: Realizar dump de la base de datos PostgreSQL
       become: yes
       become_user: postgres
-      shell: pg_dump -U {{ postgres_user }} {{ postgres_db }} > /tmp/{{ postgres_db }}-backup.sql
+      shell: PGPASSWORD={{ postgres_password }} pg_dump -U {{ postgres_user }} {{ postgres_db }} > /tmp/{{ postgres_db }}-backup.sql
       args:
         creates: "/tmp/{{ postgres_db }}-backup.sql"
 
