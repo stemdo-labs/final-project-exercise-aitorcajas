@@ -17,22 +17,15 @@
     #     mode: '0777'
 
     - name: Descifrar archivo
-      shell: openssl enc -d -aes-256-cbc -salt -in /tmp/backup.sql.gz -out /tmp/backup.sql -pass pass:{{encryption_key}}
+      shell: openssl enc -d -aes-256-cbc -salt -in /tmp/backup.sql.gz -out {{ backup_file }} -pass pass:{{encryption_key}}
 
-    - name: "Delete the database if it exists"
-      postgresql_db:
-        name: "{{ db_name }}"
-        state: absent
-      become: yes
-      become_user: postgres
-
-    - name: "Create the database if it does not exist"
-      postgresql_db:
-        state: present
-        name: "{{ db_name }}"
-        owner: "{{ db_user }}"
-      become: yes
-      become_user: postgres
+    # - name: "Crear la base de datos si no existe"
+    #   postgresql_db:
+    #     state: present
+    #     name: "{{ db_name }}"
+    #     owner: "{{ db_user }}"
+    #   become: yes
+    #   become_user: postgres
   
     - name: "Restore the database"
       postgresql_db:

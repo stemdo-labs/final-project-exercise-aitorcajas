@@ -26,18 +26,18 @@
         msg: "El archivo de backup no se creó correctamente."
       when: not backup_stat.stat.exists
 
-    - name: Crear carpeta de backups
-      local_action:
-        module: ansible.builtin.file
-        path: "/backups"
-        state: directory
-        mode: '0777'
+    # - name: Crear carpeta de backups
+    #   local_action:
+    #     module: ansible.builtin.file
+    #     path: "/backups"
+    #     state: directory
+    #     mode: '0777'
 
-    - name: Fetch del archivo de backup a la máquina local
-      fetch:
-        src: "{{ backup_file }}"
-        dest: "{{ local_backup_path }}"
-        flat: yes
+    # - name: Fetch del archivo de backup a la máquina local
+    #   fetch:
+    #     src: "{{ backup_file }}"
+    #     dest: "{{ local_backup_path }}"
+    #     flat: yes
     
     - name: Eliminar el archivo de backup local
       file:
