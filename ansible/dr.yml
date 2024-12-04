@@ -27,13 +27,14 @@
     #   become: yes
     #   become_user: postgres
   
-    - name: "Restore the database"
-      postgresql_db:
-        state: restore
-        name: "{{db_name}}"
-        target: "{{backup_file}}"
+    - name: "Restore the database using psql"
+      command: >
+        psql -U postgres -d {{ db_name }} -f {{ backup_file }}
       become: yes
       become_user: postgres
+      environment:
+        PGPASSWORD: "{{ db_password }}"
+
 
     - name: Verificar la restauración
       become: true
@@ -52,7 +53,7 @@
       debug:
         msg: "Tablas restauradas: {{ restore_check.stdout_lines }}"
 
-    - name: Eliminar el archivo de backup local
-      file:
-        path: "{{ backup_file }}"
-        state: absent
+    # - name: Eliminar el archivo de backup local
+    #   file:
+    #     path: "{{ backup_file }}"
+    #     state: absent
