@@ -3,7 +3,7 @@
   hosts: localhost
   become: yes
   vars:
-    backup_file: "/tmp/backup-desc.sql.gz"
+    backup_file: "/tmp/backup.sql"
     db_name: "acajasbd"
     db_user: "acajasbd"
     encryption_key: "password"
@@ -16,8 +16,11 @@
     #     dest: "{{ backup_file }}"
     #     mode: '0777'
 
-    - name: Descifrar archivo
-      shell: openssl enc -d -aes-256-cbc -salt -in /tmp/backup.sql.gz -out {{ backup_file }} -pass pass:{{encryption_key}}
+    # - name: Descifrar archivo
+    #   shell: openssl enc -d -aes-256-cbc -salt -in /tmp/backup.sql.gz -out {{ backup_file }} -pass pass:{{encryption_key}}
+
+    - name: Descomprimir
+      shell: gzip -d /tmp/backup.sql.gz
 
     # - name: "Crear la base de datos si no existe"
     #   postgresql_db:
