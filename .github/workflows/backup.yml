@@ -22,4 +22,4 @@ jobs:
 
   - name: Subir backup
     run: |
-      az storage blob upload --account-name staacajasdvfinlab --container-name backup --file /tmp/acajasbd-backup.sql.gz --name acajasbd-backup.sql.gz --overwrite
+      az storage blob upload --account-name staacajasdvfinlab --container-name backup --file /tmp/acajasbd-backup.sql.gz.enc --name acajasbd-backup.sql.gz.enc --overwrite
