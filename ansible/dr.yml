@@ -19,6 +19,13 @@
     - name: Descifrar archivo
       shell: openssl enc -d -aes-256-cbc -salt -in /tmp/backup.sql.gz -out /tmp/backup.sql -pass pass:{{encryption_key}}
 
+    - name: "Delete the database if it exists"
+      postgresql_db:
+        name: "{{ db_name }}"
+        state: absent
+      become: yes
+      become_user: postgres
+
     - name: "Create the database if it does not exist"
       postgresql_db:
         state: present
