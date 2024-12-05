@@ -93,3 +93,4 @@ resource "azurerm_virtual_machine" "vm_bd" {
 #     disable_password_authentication = false
 #   }
 # }
+#
