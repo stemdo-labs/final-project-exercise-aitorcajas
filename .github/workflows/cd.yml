@@ -55,6 +55,14 @@ jobs:
           -n ns-acajas
         fi
 
+    - name: Crear secreto para la conexión con la base de datos
+      run: |
+        if ! kubectl get secrets secretos-backend -n ns-acajas > /dev/null 2>&1; then
+          kubectl create secret generic secretos-backend --from-literal=SPRING_DB_HOST=${{vars.SPRING_DB_HOST}} \
+          --from-literal=SPRING_DB_PORT=${{vars.SPRING_DB_PORT}} --from-literal=SPRING_DB_NAME=${{secrets.SPRING_DB_NAME}} \
+          --from-literal=SPRING_DB_USER=${{secrets.SPRING_DB_USER}} --from-literal=SPRING_DB_PASSWORD=${{secrets.SPRING_DB_PASSWORD}} -n ns-acajas
+        fi
+
     - name: Instalar Helm
       run: |
         curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
