@@ -81,12 +81,12 @@ jobs:
 
     - name: Esperar
       run: |
-        if [ "${{ inputs.desarrollo }}" = "backend" ]; then
+        if [ "${{ inputs.desarrollo }}" = "frontend" ]; then
           sleep 10s
         fi
 
     - name: Listar
       run: |
-        if [ "${{ inputs.desarrollo }}" = "backend" ]; then
+        if [ "${{ inputs.desarrollo }}" = "frontend" ]; then
           kubectl get all -n ns-acajas
         fi
