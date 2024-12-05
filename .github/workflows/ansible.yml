@@ -26,7 +26,14 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y sshpass
 
+      - name: Crear archivo con la contraseña de Ansible
+        run: |
+          echo "$VAULT_PASSWORD" > vault_password.txt
+        env:
+          VAULT_PASSWORD: ${{ secrets.VAULT_PASSWORD }}
+        working-directory: ansible
+
       - name: Ejecutar playbook para instalar PostgreSQL
         run:  |
-          cd ansible
-          ansible-playbook -i inventory.ini postgresql.yml
+          ansible-playbook -i inventory.ini postgresql.yml --vault-password-file vault_password.txt
+        working-directory: ansible

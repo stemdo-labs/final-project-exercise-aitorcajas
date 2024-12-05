@@ -11,10 +11,17 @@ jobs:
   steps:
   - uses: actions/checkout@v3
 
+  - name: Crear archivo con la contraseña de Ansible
+    run: |
+      echo "$VAULT_PASSWORD" > vault_password.txt
+    env:
+      VAULT_PASSWORD: ${{ secrets.VAULT_PASSWORD }}
+    working-directory: ansible
+
   - name: Ejecutar playbook para hacer el backup
     run: |
-      cd ansible
-      ansible-playbook -i inventory.ini backup.yml
+      ansible-playbook -i inventory.ini backup.yml --vault-password-file vault_password.txt
+    working-directory: ansible
 
   - name: Login az
     run: |
