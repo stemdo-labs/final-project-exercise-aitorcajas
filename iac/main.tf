@@ -47,6 +47,8 @@ module "vms" {
   nic_dr_name = var.nic_dr_name
   vm_bd_name  = var.vm_bd_name
   vm_dr_name  = var.vm_dr_name
+  vm_user     = var.vm_user
+  vm_password = var.vm_password
   depends_on  = [module.networks]
 }
 
