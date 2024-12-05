@@ -57,7 +57,7 @@ jobs:
 
     - name: Crear secreto para la conexión con la base de datos
       run: |
-        if ! kubectl get secrets secretos-backend -n ns-acajas > /dev/null 2>&1; then
+        if ! kubectl get secrets secretos-backend -n ns-acajas > /dev/null 2>&1 && [ "${{ inputs.desarrollo }}" = "backend"; then
           kubectl create secret generic secretos-backend --from-literal=SPRING_DB_HOST=${{vars.SPRING_DB_HOST}} \
           --from-literal=SPRING_DB_PORT=${{vars.SPRING_DB_PORT}} --from-literal=SPRING_DB_NAME=${{secrets.SPRING_DB_NAME}} \
           --from-literal=SPRING_DB_USER=${{secrets.SPRING_DB_USER}} --from-literal=SPRING_DB_PASSWORD=${{secrets.SPRING_DB_PASSWORD}} -n ns-acajas
@@ -81,8 +81,12 @@ jobs:
 
     - name: Esperar
       run: |
-        sleep 10s
+        if [ "${{ inputs.desarrollo }}" = "backend"; then
+          sleep 10s
+        fi
 
     - name: Listar
       run: |
-        kubectl get all -n ns-acajas
+        if [ "${{ inputs.desarrollo }}" = "backend"; then
+          kubectl get all -n ns-acajas
+        fi
