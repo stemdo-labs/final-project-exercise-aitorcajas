@@ -2,11 +2,8 @@
 - name: Backup de base de datos PostgreSQL y subida a Azure Blob Storage
   hosts: localhost
   become: true
-  vars:
-    postgres_db: "acajasbd"
-    postgres_user: "acajasbd"
-    # local_backup_path: "/backups/{{ postgres_db }}-backup.sql.gz"
-    postgres_password: "password"
+  vars_files:
+    - variables.yml
 
   tasks:
     - name: Realizar dump de la base de datos PostgreSQL

@@ -2,10 +2,8 @@
 - name: Descargar y restaurar base de datos PostgreSQL desde copia de seguridad
   hosts: localhost
   become: yes
-  vars:
-    db_name: "acajasbd"
-    db_user: "acajasbd"
-    db_password: password
+  vars_files:
+    - variables.yml
 
   tasks:
     # - name: Copiar archivo a la máquina remota
@@ -27,17 +25,17 @@
   
     - name: "Restore the database using psql"
       command: >
-        psql -U postgres -d {{ db_name }} -f /tmp/backup.sql
+        psql -U postgres -d {{ postgres_db }} -f /tmp/backup.sql
       become: yes
       become_user: postgres
       environment:
-        PGPASSWORD: "{{ db_password }}"
+        PGPASSWORD: "{{ postgres_password }}"
 
 
     - name: Verificar la restauración
       become: true
       shell: |
-        psql "postgresql://{{ db_user }}:{{ db_password }}@localhost:5432/{{ db_name }}" -c "\dt"
+        psql "postgresql://{{ postgres_user }}:{{ postgres_password }}@localhost:5432/{{ postgres_db }}" -c "\dt"
       register: restore_check
       args:
         executable: /bin/bash
