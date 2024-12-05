@@ -7,7 +7,7 @@ resource "azurerm_network_interface" "nic_bd" {
     name                          = "ip-configuration-bd"
     subnet_id                     = "/subscriptions/86f76907-b9d5-46fa-a39d-aff8432a1868/resourceGroups/final-project-common/providers/Microsoft.Network/virtualNetworks/vnet-common-bootcamp/subnets/sn-acajas"
     private_ip_address_allocation = "Static"
-    private_ip_address = "10.0.30.4"
+    private_ip_address            = "10.0.30.4"
     public_ip_address_id          = var.pip_id
   }
 }
@@ -51,8 +51,8 @@ resource "azurerm_virtual_machine" "vm_bd" {
 
   os_profile {
     computer_name  = "hostname"
-    admin_username = "acajasbd"
-    admin_password = "Password1234!"
+    admin_username = var.vm_user
+    admin_password = var.vm_password
   }
 
   os_profile_linux_config {

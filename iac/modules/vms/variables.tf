@@ -29,3 +29,11 @@ variable "vm_bd_name" {
 variable "vm_dr_name" {
   
 }
+
+variable "vm_user" {
+  
+}
+
+variable "vm_password" {
+  
+}

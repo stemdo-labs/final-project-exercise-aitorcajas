@@ -112,3 +112,13 @@ variable "aks_nsg_name" {
   description = "Nombre del grupo de seguridad de la subnet del cluster"
   default = "aks-nsg"
 }
+
+variable "vm_user" {
+  type = string
+  description = "El nombre de usuario de la máquina virtual"
+}
+
+variable "vm_password" {
+  type = string
+  description = "La contraseña del usuario de la máquina virtual"
+}

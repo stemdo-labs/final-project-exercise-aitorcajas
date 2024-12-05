@@ -16,6 +16,8 @@ env:
   ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
   ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
   ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+  TF_VAR_vm_user: ${{ secrets.TF_VAR_VM_USER }}
+  TF_VAR_vm_password: ${{ secrets.TF_VAR_VM_PASSWORD }}
 
 permissions: 
   pull-requests: write
@@ -84,6 +86,8 @@ jobs:
     uses: hashicorp/terraform-github-actions@master
     with:
      tf_actions_version: ${{ env.TF_VERSION }}
+     TF_VAR_vm_user: ${{ env.TF_VAR_vm_user }}
+     TF_VAR_vm_password: ${{ env.TF_VAR_vm_password }}
      tf_actions_subcommand: 'apply'
      tf_actions_working_dir: "./iac"
      tf_actions_auto_approve: true
