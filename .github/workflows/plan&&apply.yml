@@ -48,6 +48,8 @@ jobs:
     uses: hashicorp/terraform-github-actions@master
     with:
       tf_actions_version: ${{ env.TF_VERSION }}
+      TF_VAR_vm_user: ${{ env.TF_VAR_vm_user }}
+      TF_VAR_vm_password: ${{ env.TF_VAR_vm_password }}
       tf_actions_subcommand: 'plan'
       tf_actions_working_dir: "./iac"
 
