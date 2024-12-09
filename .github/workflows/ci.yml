@@ -14,6 +14,12 @@ jobs:
   tests:
     if: ${{ inputs.entorno == 'production' }}
     runs-on: ubuntu-latest
+    env:
+      SPRING_DB_HOST: ${{ vars.SPRING_DB_HOST }}
+      SPRING_DB_PORT: ${{ vars.SPRING_DB_PORT }}
+      SPRING_DB_NAME: ${{ secrets.SPRING_DB_NAME }}
+      SPRING_DB_USER: ${{ secrets.SPRING_DB_USER }}
+      SPRING_DB_PASSWORD: ${{ secrets.SPRING_DB_PASSWORD }}
     environment: ${{ inputs.entorno }}
     steps:
       - name: Checkout del repositorio
