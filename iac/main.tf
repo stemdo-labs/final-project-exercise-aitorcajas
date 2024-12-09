@@ -77,4 +77,3 @@ resource "azurerm_container_registry" "acajascr" {
   sku                 = "Basic"
   admin_enabled       = false
 }
-#
