@@ -1,0 +1,18 @@
+name: Action para definir el entorno
+
+outputs:
+  entorno:
+    value: ${{steps.entorno_definido.outputs.environment}}
+
+runs:
+  using: composite
+  steps:
+    - name: Definir entorno
+      id: entorno_definido
+      run: |
+        if [[ "${GITHUB_REF}" == "refs/heads/main" ]]; then
+          echo "environment=production" >> $GITHUB_OUTPUT
+        elif [[ "${GITHUB_REF}" == "refs/heads/develop" ]]; then
+          echo "environment=development" >> $GITHUB_OUTPUT
+        fi
+      shell: bash
