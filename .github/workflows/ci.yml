@@ -6,13 +6,13 @@ on:
       entorno:
         type: string
         required: true
-    outputs:
       desarrollo:
-        value: ${{ jobs.ci.outputs.app_desarrollo }}
+        type: string
+        required: true
 
 jobs:
-  tests:
-    if: ${{ inputs.entorno == 'production' }}
+  tests-backend:
+    if: ${{ inputs.entorno == 'production' && inputs.desarrollo == 'backend'}}
     runs-on: ubuntu-latest
     env:
       SPRING_DB_HOST: 4.234.82.132
@@ -33,20 +33,33 @@ jobs:
 
       - name: Run Maven tests
         run: mvn test
+    
+  tests-frontend:
+    if: ${{ inputs.entorno == 'production' && inputs.desarrollo == 'frontend'}}
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout del repositorio
+      uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Run unit tests
+      run: npm run test:unit
 
   ci:
     runs-on: ubuntu-latest
     if: ${{ always() }}
-    needs: tests
+    needs: [tests-backend, tests-frontend]
     environment: ${{ inputs.entorno }}
-    outputs:
-      app_desarrollo: ${{steps.desarrollo.outputs.app_desarrollo}}
     steps:
       - name: Checkout del repositorio
         uses: actions/checkout@v3
-
-      - name: Mostrar entorno
-        run: echo "${{ inputs.entorno }}"
 
       - name: Extraer versión
         id: version
@@ -62,26 +75,12 @@ jobs:
             echo "app_version=$VERSION" >> $GITHUB_OUTPUT
           fi
 
-      - name: Extraer desarrollo
-        id: desarrollo
-        run: |
-          REPO_NAME=$(echo "${{ github.repository }}" | cut -d'/' -f2)
-          if [[ "$REPO_NAME" == *"backend"* ]]; then
-            DESARROLLO="backend"
-            echo "DESARROLLO=$DESARROLLO" >> $GITHUB_ENV
-            echo "app_desarrollo=$DESARROLLO" >> $GITHUB_OUTPUT
-          elif [[ "$REPO_NAME" == *"frontend"* ]]; then
-            DESARROLLO="frontend"
-            echo "DESARROLLO=$DESARROLLO" >> $GITHUB_ENV
-            echo "app_desarrollo=$DESARROLLO" >> $GITHUB_OUTPUT
-          fi
-
       - name: Cargar el nombre de la imagen
         id: cargar_imagen
         uses: stemdo-labs/final-project-exercise-aitorcajas/.github/actions/action-image@main
         with:
           version: ${{steps.version.outputs.app_version}}
-          desarrollo: ${{steps.desarrollo.outputs.app_desarrollo}}
+          desarrollo: ${{ inputs.desarrollo }}
 
       - name: Build de la imagen
         run: |

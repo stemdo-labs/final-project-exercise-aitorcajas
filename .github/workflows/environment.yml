@@ -5,13 +5,33 @@ on:
   outputs:
    entorno:
     value: ${{ jobs.environment.outputs.environment }}
+   desarrollo:
+    value: ${{ jobs.environment.outputs.desarrollo }}
 
 jobs:
  environment:
   runs-on: ubuntu-latest
   outputs:
    environment: ${{ steps.set_environment.outputs.environment }}
+   desarrollo: ${{ steps.desarrollo.outputs.app_desarrollo }}
   steps:
+  - name: Checkout del repositorio
+    uses: actions/checkout@v3
+
+  - name: Extraer desarrollo
+    id: desarrollo
+    run: |
+      REPO_NAME=$(echo "${{ github.repository }}" | cut -d'/' -f2)
+      if [[ "$REPO_NAME" == *"backend"* ]]; then
+        DESARROLLO="backend"
+        echo "DESARROLLO=$DESARROLLO" >> $GITHUB_ENV
+        echo "app_desarrollo=$DESARROLLO" >> $GITHUB_OUTPUT
+      elif [[ "$REPO_NAME" == *"frontend"* ]]; then
+        DESARROLLO="frontend"
+        echo "DESARROLLO=$DESARROLLO" >> $GITHUB_ENV
+        echo "app_desarrollo=$DESARROLLO" >> $GITHUB_OUTPUT
+      fi
+
   - name: Definir entorno
     id: set_environment
     run: |
