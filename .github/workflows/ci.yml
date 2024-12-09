@@ -15,7 +15,7 @@ jobs:
     if: ${{ inputs.entorno == 'production' }}
     runs-on: ubuntu-latest
     env:
-      SPRING_DB_HOST: ${{ vars.SPRING_DB_HOST }}
+      SPRING_DB_HOST: 4.234.82.132
       SPRING_DB_PORT: ${{ vars.SPRING_DB_PORT }}
       SPRING_DB_NAME: ${{ secrets.SPRING_DB_NAME }}
       SPRING_DB_USER: ${{ secrets.SPRING_DB_USER }}
