@@ -10,7 +10,7 @@ on:
     
 jobs:
   subir:
-    runs-on: runner-stemdo-labs
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
