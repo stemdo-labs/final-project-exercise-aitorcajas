@@ -37,6 +37,7 @@ jobs:
   tests-frontend:
     if: ${{ inputs.entorno == 'production' && inputs.desarrollo == 'frontend'}}
     runs-on: ubuntu-latest
+    environment: ${{ inputs.entorno }}
     steps:
     - name: Checkout del repositorio
       uses: actions/checkout@v3
