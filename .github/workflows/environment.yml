@@ -1,0 +1,22 @@
+name: Definir entornos
+
+on:
+ workflow_call:
+  outputs:
+   entorno:
+    value: ${{ jobs.environment.outputs.environment }}
+
+jobs:
+ environment:
+  runs-on: ubuntu-latest
+  outputs:
+   environment: ${{ steps.set_environment.outputs.environment }}
+  steps:
+  - name: Definir entorno
+    id: set_environment
+    run: |
+     if [[ "${GITHUB_REF}" == "refs/heads/main" ]]; then
+      echo "environment=production" >> $GITHUB_OUTPUT
+     elif [[ "${GITHUB_REF}" == "refs/heads/development" ]]; then
+      echo "environment=development" >> $GITHUB_OUTPUT
+     fi
