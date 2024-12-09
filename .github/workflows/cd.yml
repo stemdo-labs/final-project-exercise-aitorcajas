@@ -6,10 +6,14 @@ on:
       desarrollo:
         type: string
         required: true
+      entorno:
+        type: string
+        required: true
     
 jobs:
   cd:
     runs-on: ubuntu-latest
+    environment: ${{ inputs.entorno }}
     steps:
     - name: Checkout del repositorio
       uses: actions/checkout@v3
