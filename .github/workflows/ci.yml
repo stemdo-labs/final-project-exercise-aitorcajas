@@ -85,7 +85,10 @@ jobs:
 
       - name: Modificar nginx.conf según el entorno
         run: |
-          sed "s/ENVIRONMENT/${{ inputs.entorno }}/g" nginx.conf.template > nginx.conf
+          REPO_NAME=$(echo "${{ github.repository }}" | cut -d'/' -f2)
+          if [[ "$REPO_NAME" == *"frontend"* ]]; then
+            sed "s/ENVIRONMENT/${{ inputs.entorno }}/g" nginx.conf.template > nginx.conf
+          fi
 
       - name: Build de la imagen
         run: |
