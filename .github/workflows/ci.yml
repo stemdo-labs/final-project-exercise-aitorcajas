@@ -83,6 +83,10 @@ jobs:
           version: ${{steps.version.outputs.app_version}}
           desarrollo: ${{ inputs.desarrollo }}
 
+      - name: Modificar nginx.conf según el entorno
+        run: |
+          sed "s/ENVIRONMENT/${{ inputs.entorno }}/g" nginx.conf.template > nginx.conf
+
       - name: Build de la imagen
         run: |
           docker build -t ${{steps.cargar_imagen.outputs.image_name}} .

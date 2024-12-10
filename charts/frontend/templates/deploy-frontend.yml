@@ -1,17 +1,17 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: frontend
+  name: {{.Release.Name}}
   namespace: {{.Values.namespace}}
 spec:
   selector:
     matchLabels:
-      app: frontend
+      app: {{.Release.Name}}
   replicas: {{.Values.replicas}}
   template:
     metadata:
       labels:
-        app: frontend
+        app: {{.Release.Name}}
     spec:
       containers:
       - name: frontend

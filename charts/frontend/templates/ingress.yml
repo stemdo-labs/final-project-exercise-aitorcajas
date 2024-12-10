@@ -1,19 +1,24 @@
-# apiVersion: networking.k8s.io/v1
-# kind: Ingress
-# metadata:
-#   name: {{.Release.Name}}-ingress
-#   namespace: {{.Values.namespace}}
-#   annotations:
-#     nginx.ingress.kubernetes.io/rewrite-target: /
-# spec:
-#   rules:
-#   - host: {{.Release.name}}-service
-#     http:
-#       paths:
-#       - path: /
-#         pathType: Prefix
-#         backend:
-#           service:
-#             name: frontend
-#             port:
-#               number: 3000
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: frontend-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /dev
+        pathType: Prefix
+        backend:
+          service:
+            name: frontend-dev
+            port:
+              number: 3000
+      - path: /prod
+        pathType: Prefix
+        backend:
+          service:
+            name: frontend-prod
+            port:
+              number: 3000
