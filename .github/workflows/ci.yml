@@ -76,21 +76,12 @@ jobs:
             echo "app_version=$VERSION" >> $GITHUB_OUTPUT
           fi
 
-      - name: Extraer desarrollo
-        id: set_desarrollo
-        run: |
-          if [[ "${{ inputs.desarrollo }}" == *"frontend"* ]]; then
-            DESARROLLO_EX="frontend"
-            echo "DESARROLLO_EX=$DESARROLLO_EX" >> $GITHUB_ENV
-            echo "desarrollo_ex=$DESARROLLO_EX" >> $GITHUB_OUTPUT
-          fi
-
       - name: Cargar el nombre de la imagen
         id: cargar_imagen
         uses: stemdo-labs/final-project-exercise-aitorcajas/.github/actions/action-image@main
         with:
           version: ${{steps.version.outputs.app_version}}
-          desarrollo: ${{ steps.set_desarrollo.outputs.desarrollo_ex }}
+          desarrollo: ${{ inputs.desarrollo }}
 
       - name: Modificar nginx.conf según el entorno
         run: |
