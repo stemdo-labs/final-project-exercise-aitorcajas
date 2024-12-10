@@ -73,14 +73,26 @@ jobs:
         chmod 700 get_helm.sh
         ./get_helm.sh
 
-    - name: Login Harbor
-      run: |
-        helm registry login harbor.codeops.es -u ${{ secrets.HARBOR_USER }} -p ${{ secrets.HARBOR_PASS }}
+    # - name: Login Harbor
+    #   run: |
+    #     helm registry login harbor.codeops.es -u ${{ secrets.HARBOR_USER }} -p ${{ secrets.HARBOR_PASS }}
+
+    # - name: Instalar chart
+    #   id: check_release
+    #   run: |
+    #     helm upgrade --install ${{ inputs.desarrollo }} oci://harbor.codeops.es/acajas/${{ inputs.desarrollo }} -f values.yml -n ns-acajas
+    #   working-directory: templates
+
+    - name: Login Azure Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: acajascr.azurecr.io
+        username: ${{ secrets.ARM_CLIENT_ID }}
+        password: ${{ secrets.ARM_CLIENT_SECRET }}
 
     - name: Instalar chart
-      id: check_release
       run: |
-        helm upgrade --install ${{ inputs.desarrollo }} oci://harbor.codeops.es/acajas/${{ inputs.desarrollo }} -f values.yml -n ns-acajas
+        helm upgrade --install ${{ inputs.desarrollo }} oci://acajascr.azurecr.io/acajas/${{ inputs.desarrollo }} -f values.yml -n ns-acajas
       working-directory: templates
 
     - name: Esperar

@@ -59,7 +59,7 @@ jobs:
         with:
           registry: acajascr.azurecr.io
           username: ${{ secrets.ARM_CLIENT_ID }}
-          password: ${{ secrets.ARM_CLIENT_SECRET }}   
+          password: ${{ secrets.ARM_CLIENT_SECRET }}  
 
       - name: Push de los charts
         run: |
