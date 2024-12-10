@@ -6,7 +6,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: backend
+      app: {{.Release.Name}}
   replicas: {{.Values.replicas}}
   template:
     metadata:
@@ -14,7 +14,7 @@ spec:
         app: {{.Release.Name}}
     spec:
       containers:
-      - name: {{.Release.Name}}
+      - name: backend
         image: {{.Values.image}}
         envFrom:
         - secretRef:
