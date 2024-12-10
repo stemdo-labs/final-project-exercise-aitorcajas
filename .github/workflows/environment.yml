@@ -33,21 +33,21 @@ jobs:
       REPO_NAME=$(echo "${{ github.repository }}" | cut -d'/' -f2)
 
       if [[ "$REPO_NAME" == *"backend"* && "${{ steps.set_environment.outputs.environment }}" == "production" ]]; then
-        DESARROLLO="backend-prod"
+        DESARROLLO="backend-production"
         echo "DESARROLLO=$DESARROLLO" >> $GITHUB_ENV
         echo "app_desarrollo=$DESARROLLO" >> $GITHUB_OUTPUT
       elif [[ "$REPO_NAME" == *"backend"* && "${{ steps.set_environment.outputs.environment }}" == "development" ]]; then
-        DESARROLLO="backend-dev"
+        DESARROLLO="backend-development"
         echo "DESARROLLO=$DESARROLLO" >> $GITHUB_ENV
         echo "app_desarrollo=$DESARROLLO" >> $GITHUB_OUTPUT
       fi
 
       if [[ "$REPO_NAME" == *"frontend"* && "${{ steps.set_environment.outputs.environment }}" == "production" ]]; then
-        DESARROLLO="frontend-prod"
+        DESARROLLO="frontend-production"
         echo "DESARROLLO=$DESARROLLO" >> $GITHUB_ENV
         echo "app_desarrollo=$DESARROLLO" >> $GITHUB_OUTPUT
       elif [[ "$REPO_NAME" == *"frontend"* && "${{ steps.set_environment.outputs.environment }}" == "development" ]]; then
-        DESARROLLO="frontend-dev"
+        DESARROLLO="frontend-development"
         echo "DESARROLLO=$DESARROLLO" >> $GITHUB_ENV
         echo "app_desarrollo=$DESARROLLO" >> $GITHUB_OUTPUT
       fi

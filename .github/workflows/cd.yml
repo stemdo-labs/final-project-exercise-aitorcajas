@@ -96,7 +96,7 @@ jobs:
           helm upgrade --install ${{ inputs.desarrollo }} oci://acajascr.azurecr.io/acajas/backend -f values.yml -n ns-acajas
         else
           helm upgrade --install ${{ inputs.desarrollo }} oci://acajascr.azurecr.io/acajas/frontend -f values.yml -n ns-acajas
-          sleep 10s
+          sleep 20s
           kubectl get all -n ns-acajas
         fi
       working-directory: templates

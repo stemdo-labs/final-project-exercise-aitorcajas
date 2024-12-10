@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: backend
+  name: {{.Release.Name}}
   namespace: {{.Values.namespace}}
 spec:
   selector:
@@ -11,10 +11,10 @@ spec:
   template:
     metadata:
       labels:
-        app: backend
+        app: {{.Release.Name}}
     spec:
       containers:
-      - name: backend
+      - name: {{.Release.Name}}
         image: {{.Values.image}}
         envFrom:
         - secretRef:
