@@ -63,5 +63,5 @@ jobs:
 
       - name: Push de los charts
         run: |
-          helm push backend-${{steps.back_version.outputs.back_version}}.tgz
-          helm push frontend-${{steps.front_version.outputs.front_version}}.tgz
+          helm push backend-${{steps.back_version.outputs.back_version}}.tgz oci://acajascr.azurecr.io/acajas
+          helm push frontend-${{steps.front_version.outputs.front_version}}.tgz oci://acajascr.azurecr.io/acajas
