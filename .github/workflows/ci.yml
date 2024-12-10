@@ -12,7 +12,7 @@ on:
 
 jobs:
   tests-backend:
-    if: ${{ inputs.entorno == 'production' && inputs.desarrollo == 'backend'}}
+    if: ${{ inputs.entorno == 'production' && contains(inputs.desarrollo, 'backend') }}
     runs-on: ubuntu-latest
     env:
       SPRING_DB_HOST: ${{ vars.PIP_VM_BD }}
@@ -35,7 +35,7 @@ jobs:
         run: mvn test
     
   tests-frontend:
-    if: ${{ inputs.entorno == 'production' && inputs.desarrollo == 'frontend'}}
+    if: ${{ inputs.entorno == 'production' && contains(inputs.desarrollo, 'frontend') }}
     runs-on: ubuntu-latest
     environment: ${{ inputs.entorno }}
     steps:
