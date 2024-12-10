@@ -115,10 +115,10 @@ variable "aks_nsg_name" {
 
 variable "vm_user" {
   type = string
-  description = "El nombre de usuario de la máquina virtual"
+  description = "El nombre de usuario de la máquina virtual de la base de datos"
 }
 
 variable "vm_password" {
   type = string
-  description = "La contraseña del usuario de la máquina virtual"
+  description = "La contraseña del usuario de la máquina virtual de la base de datos"
 }
