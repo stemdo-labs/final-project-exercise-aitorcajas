@@ -92,12 +92,11 @@ jobs:
 
     - name: Instalar chart
       run: |
-        helm upgrade --install ${{ inputs.desarrollo }} oci://acajascr.azurecr.io/acajas/${{ inputs.desarrollo }} -f values.yml -n ns-acajas
-      working-directory: templates
-
-    - name: Listar
-      run: |
-        if [[ "${{ inputs.desarrollo }}" == *"frontend"* ]]; then
+        if [[ "${{ inputs.desarrollo }}" == *"backend"* ]]; then
+          helm upgrade --install ${{ inputs.desarrollo }} oci://acajascr.azurecr.io/acajas/backend -f values.yml -n ns-acajas
+        else
+          helm upgrade --install ${{ inputs.desarrollo }} oci://acajascr.azurecr.io/acajas/frontend -f values.yml -n ns-acajas
           sleep 10s
           kubectl get all -n ns-acajas
         fi
+      working-directory: templates
