@@ -13,9 +13,9 @@ on:
 jobs:
   tests-backend:
     if: ${{ inputs.entorno == 'production' && inputs.desarrollo == 'backend'}}
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     env:
-      SPRING_DB_HOST: ${{ vars.PIP_VM_BD }}
+      SPRING_DB_HOST: localhost
       SPRING_DB_PORT: ${{ vars.SPRING_DB_PORT }}
       SPRING_DB_NAME: ${{ secrets.SPRING_DB_NAME }}
       SPRING_DB_USER: ${{ secrets.SPRING_DB_USER }}
