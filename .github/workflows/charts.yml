@@ -44,12 +44,24 @@ jobs:
           echo "front_version=$VERSION" >> $GITHUB_OUTPUT
         working-directory: charts
 
-      - name: Login Harbor
-        run: |
-          helm registry login harbor.codeops.es -u ${{ secrets.HARBOR_USER }} -p ${{ secrets.HARBOR_PASS }}
+      # - name: Login Harbor
+      #   run: |
+      #     helm registry login harbor.codeops.es -u ${{ secrets.HARBOR_USER }} -p ${{ secrets.HARBOR_PASS }}
 
-      - name: Push de los Charts
+      # - name: Push de los Charts
+      #   run: |
+      #     helm push backend-${{steps.back_version.outputs.back_version}}.tgz oci://harbor.codeops.es/acajas
+      #     helm push frontend-${{steps.front_version.outputs.front_version}}.tgz oci://harbor.codeops.es/acajas
+      #   working-directory: charts  
+
+      - name: Login Azure Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: acajascr.azurecr.io
+          username: ${{ secrets.ARM_CLIENT_ID }}
+          password: ${{ secrets.ARM_CLIENT_SECRET }}   
+
+      - name: Push de los charts
         run: |
-          helm push backend-${{steps.back_version.outputs.back_version}}.tgz oci://harbor.codeops.es/acajas
-          helm push frontend-${{steps.front_version.outputs.front_version}}.tgz oci://harbor.codeops.es/acajas
-        working-directory: charts     
+          helm push backend-${{steps.back_version.outputs.back_version}}.tgz
+          helm push frontend-${{steps.front_version.outputs.front_version}}.tgz
