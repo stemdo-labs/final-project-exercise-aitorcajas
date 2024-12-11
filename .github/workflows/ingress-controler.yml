@@ -1,0 +1,21 @@
+name: Desplegar ingress-controler
+
+on:
+  workflow_dispatch:
+    
+jobs:
+  ingress:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout del repositorio
+        uses: actions/checkout@v3
+
+      - name: Instalar kubernetes
+        run: |
+          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+          sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+
+      - name: Instalar ingress-controler
+        run: |
+          kubectl apply -f ingress-controler.yml -n ns-acajas
+        working-directory: templates
