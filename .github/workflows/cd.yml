@@ -100,11 +100,14 @@ jobs:
 
         if [[ "${{ inputs.desarrollo }}" == "frontend-development" ]]; then
           helm upgrade --install ${{ inputs.desarrollo }} oci://acajascr.azurecr.io/acajas/frontend -f values-dev.yml -n ns-acajas
-          sleep 20s
-          kubectl get all -n ns-acajas
         elif [[ "${{ inputs.desarrollo }}" == "frontend-production" ]]; then
           helm upgrade --install ${{ inputs.desarrollo }} oci://acajascr.azurecr.io/acajas/frontend -f values-prod.yml -n ns-acajas
-          sleep 20s
-          kubectl get all -n ns-acajas
         fi
+      working-directory: templates
+
+    - name: Instalar ingress
+      run: |
+        helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+        helm install ingress-nginx/ingress-nginx --generate-name
+        kubectl apply -f ingress.yml -n ns-acajas
       working-directory: templates
