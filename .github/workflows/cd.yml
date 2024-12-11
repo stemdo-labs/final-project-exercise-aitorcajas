@@ -107,9 +107,7 @@ jobs:
 
     - name: Instalar ingress
       run: |
-        if [[ "${{ inputs.desarrollo }}" == *"frontend"* ]]; then
-          helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx -n ns-acajas
-          helm install ingress-nginx/ingress-nginx --generate-name -n ns-acajas
+        if [[ "${{ inputs.desarrollo }}" == *"frontend"* ]]; then 
           kubectl apply -f ingress.yml -n ns-acajas
           kubectl get ingress -n ns-acajas
         fi
