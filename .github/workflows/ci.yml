@@ -100,7 +100,7 @@ jobs:
 
       - name: IBM Cloud Login
         run: |
-          ibmcloud login --apikey ${{ screts.APIKEY_IBM_ACAJAS }} -r eu-gb
+          ibmcloud login --apikey ${{ secrets.APIKEY_IBM_ACAJAS }} -r eu-gb
           ibmcloud target -g Stemdo_Sandbox
 
       - name: Instalar plugin CR
