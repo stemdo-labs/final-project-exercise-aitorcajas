@@ -59,7 +59,7 @@ jobs:
   ci:
     runs-on: ubuntu-latest
     if: ${{ always() }}
-    needs: [tests-backend, tests-frontend]
+    needs: [tests-frontend]
     environment: ${{ inputs.entorno }}
     steps:
       - name: Checkout del repositorio
