@@ -127,15 +127,15 @@ jobs:
     - name: Instalar chart
       run: |
         if [[ "${{ inputs.desarrollo }}" == "backend-development" ]]; then
-          helm upgrade --install ${{ inputs.desarrollo }} oci://icr.io/acajas-cr/acajas/backend -f values-dev.yml -n ns-acajas
+          helm upgrade --install ${{ inputs.desarrollo }} oci://icr.io/acajas-cr/acajas/backend -f values-dev.yml -n acajas
         elif [[ "${{ inputs.desarrollo }}" == "backend-production" ]]; then
-          helm upgrade --install ${{ inputs.desarrollo }} oci://icr.io/acajas-cr/acajas/backend -f values-prod.yml -n ns-acajas
+          helm upgrade --install ${{ inputs.desarrollo }} oci://icr.io/acajas-cr/acajas/backend -f values-prod.yml -n acajas
         fi
 
         if [[ "${{ inputs.desarrollo }}" == "frontend-development" ]]; then
-          helm upgrade --install ${{ inputs.desarrollo }} oci://icr.io/acajas-cr/acajas/frontend -f values-dev.yml -n ns-acajas
+          helm upgrade --install ${{ inputs.desarrollo }} oci://icr.io/acajas-cr/acajas/frontend -f values-dev.yml -n acajas
         elif [[ "${{ inputs.desarrollo }}" == "frontend-production" ]]; then
-          helm upgrade --install ${{ inputs.desarrollo }} oci://icr.io/acajas-cr/acajas/frontend -f values-prod.yml -n ns-acajas
+          helm upgrade --install ${{ inputs.desarrollo }} oci://icr.io/acajas-cr/acajas/frontend -f values-prod.yml -n acajas
         fi
       working-directory: templates
 
