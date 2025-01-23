@@ -70,14 +70,14 @@ jobs:
 
     - name: Crear namespace
       run: |
-        if ! oc get ns acajas > /dev/null 2>&1; then
-          oc create ns acajas
+        if ! kubectl get ns acajas > /dev/null 2>&1; then
+          kubectl create ns acajas
         fi
       
     - name: Crear secreto con las credenciales
       run: |
-        if ! oc get secret ibmcloud-registry-secret -n acajas > /dev/null 2>&1; then
-          oc create secret docker-registry ibmcloud-registry-secret \
+        if ! kubectl get secret ibmcloud-registry-secret -n acajas > /dev/null 2>&1; then
+          kubectl create secret docker-registry ibmcloud-registry-secret \
           --docker-server=icr.io \
           --docker-username=iamapikey \
           --docker-password=${{ secrets.APIKEY_IBM_ACAJAS }} \
@@ -86,8 +86,8 @@ jobs:
 
     - name: Crear secreto para la conexión con la base de datos
       run: |
-        if ! oc get secrets secretos-backend -n ns-acajas > /dev/null 2>&1 && [[ "${{ inputs.desarrollo }}" == *"backend"* ]]; then
-          oc create secret generic secretos-backend --from-literal=SPRING_DB_HOST=${{vars.SPRING_DB_HOST}} \
+        if ! kubectl get secrets secretos-backend -n ns-acajas > /dev/null 2>&1 && [[ "${{ inputs.desarrollo }}" == *"backend"* ]]; then
+          kubectl create secret generic secretos-backend --from-literal=SPRING_DB_HOST=${{vars.SPRING_DB_HOST}} \
           --from-literal=SPRING_DB_PORT=${{vars.SPRING_DB_PORT}} --from-literal=SPRING_DB_NAME=${{secrets.SPRING_DB_NAME}} \
           --from-literal=SPRING_DB_USER=${{secrets.SPRING_DB_USER}} --from-literal=SPRING_DB_PASSWORD=${{secrets.SPRING_DB_PASSWORD}} -n acajas
         fi
