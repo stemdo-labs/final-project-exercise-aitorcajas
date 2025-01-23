@@ -86,7 +86,7 @@ jobs:
 
     - name: Crear secreto para la conexión con la base de datos
       run: |
-        if ! kubectl get secrets secretos-backend -n ns-acajas > /dev/null 2>&1 && [[ "${{ inputs.desarrollo }}" == *"backend"* ]]; then
+        if ! kubectl get secrets secretos-backend -n acajas > /dev/null 2>&1 && [[ "${{ inputs.desarrollo }}" == *"backend"* ]]; then
           kubectl create secret generic secretos-backend --from-literal=SPRING_DB_HOST=${{vars.SPRING_DB_HOST}} \
           --from-literal=SPRING_DB_PORT=${{vars.SPRING_DB_PORT}} --from-literal=SPRING_DB_NAME=${{secrets.SPRING_DB_NAME}} \
           --from-literal=SPRING_DB_USER=${{secrets.SPRING_DB_USER}} --from-literal=SPRING_DB_PASSWORD=${{secrets.SPRING_DB_PASSWORD}} -n acajas
@@ -114,6 +114,10 @@ jobs:
     #     registry: acajascr.azurecr.io
     #     username: ${{ secrets.ARM_CLIENT_ID }}
     #     password: ${{ secrets.ARM_CLIENT_SECRET }}
+
+    - name: Instalar plugin CR
+      run: |
+        ibmcloud plugin install container-registry
 
     - name: Login en IBM Container Registry
       run: |
