@@ -18,7 +18,7 @@ jobs:
     if: ${{ inputs.entorno == 'production' && contains(inputs.desarrollo, 'backend') }}
     runs-on: ubuntu-latest
     env:
-      SPRING_DB_HOST: ${{ vars.PIP_VM_BD }}
+      SPRING_DB_HOST: ${{ vars.SPRING_DB_HOST }}
       SPRING_DB_PORT: ${{ vars.SPRING_DB_PORT }}
       SPRING_DB_NAME: ${{ secrets.SPRING_DB_NAME }}
       SPRING_DB_USER: ${{ secrets.SPRING_DB_USER }}
@@ -115,5 +115,3 @@ jobs:
       - name: Push de la imagen
         run: |
           docker push ${{steps.cargar_imagen.outputs.image_name}}
-
-#
