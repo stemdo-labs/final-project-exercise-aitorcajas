@@ -52,12 +52,12 @@ jobs:
     #     az acr login --name acajascr.azurecr.io
 
     - name: Instalar IBM CLI
-        run: |
-          curl -fsSL https://clis.cloud.ibm.com/install/linux | sh
+      run: |
+        curl -fsSL https://clis.cloud.ibm.com/install/linux | sh
 
     - name: IBM Cloud Login
       run: |
-        ibmcloud login --apikey ${{ screts.APIKEY_IBM_ACAJAS }} -r eu-gb
+        ibmcloud login --apikey ${{ secrets.APIKEY_IBM_ACAJAS }} -r eu-gb
         ibmcloud target -g Stemdo_Sandbox
 
     - name: Instalar plugin Container Service
