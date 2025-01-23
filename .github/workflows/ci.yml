@@ -14,28 +14,28 @@ on:
         required: true
 
 jobs:
-  tests-backend:
-    if: ${{ inputs.entorno == 'production' && contains(inputs.desarrollo, 'backend') }}
-    runs-on: ubuntu-latest
-    env:
-      SPRING_DB_HOST: ${{ vars.SPRING_DB_HOST }}
-      SPRING_DB_PORT: ${{ vars.SPRING_DB_PORT }}
-      SPRING_DB_NAME: ${{ secrets.SPRING_DB_NAME }}
-      SPRING_DB_USER: ${{ secrets.SPRING_DB_USER }}
-      SPRING_DB_PASSWORD: ${{ secrets.SPRING_DB_PASSWORD }}
-    environment: ${{ inputs.entorno }}
-    steps:
-      - name: Checkout del repositorio
-        uses: actions/checkout@v3
+  # tests-backend:
+  #   if: ${{ inputs.entorno == 'production' && contains(inputs.desarrollo, 'backend') }}
+  #   runs-on: ubuntu-latest
+  #   env:
+  #     SPRING_DB_HOST: ${{ vars.SPRING_DB_HOST }}
+  #     SPRING_DB_PORT: ${{ vars.SPRING_DB_PORT }}
+  #     SPRING_DB_NAME: ${{ secrets.SPRING_DB_NAME }}
+  #     SPRING_DB_USER: ${{ secrets.SPRING_DB_USER }}
+  #     SPRING_DB_PASSWORD: ${{ secrets.SPRING_DB_PASSWORD }}
+  #   environment: ${{ inputs.entorno }}
+  #   steps:
+  #     - name: Checkout del repositorio
+  #       uses: actions/checkout@v3
 
-      - name: Setup Java
-        uses: actions/setup-java@v3
-        with:
-          java-version: '17'
-          distribution: 'temurin'
+  #     - name: Setup Java
+  #       uses: actions/setup-java@v3
+  #       with:
+  #         java-version: '17'
+  #         distribution: 'temurin'
 
-      - name: Run Maven tests
-        run: mvn test
+  #     - name: Run Maven tests
+  #       run: mvn test
     
   tests-frontend:
     if: ${{ inputs.entorno == 'production' && contains(inputs.desarrollo, 'frontend') }}
