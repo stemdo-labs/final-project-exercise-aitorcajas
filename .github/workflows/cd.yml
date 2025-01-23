@@ -18,53 +18,78 @@ jobs:
     - name: Checkout del repositorio
       uses: actions/checkout@v3
 
-    - name: Instalar kubernetes
+    - name: Instalar kubectl
       run: |
         curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
         sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 
-    - name: Instalar az CLI
-      run: |
-        curl -sL https://aka.ms/InstallAzureCLIDeb| sudo bash
+    # - name: Instalar az CLI
+    #   run: |
+    #     curl -sL https://aka.ms/InstallAzureCLIDeb| sudo bash
 
-    - name: Instalar kubelogin
-      run: |
-        sudo az aks install-cli
+    # - name: Instalar kubelogin
+    #   run: |
+    #     sudo az aks install-cli
 
-    - name: AZ Login
-      run: |
-        az login --service-principal -u ${{ secrets.ARM_CLIENT_ID }} -p ${{ secrets.ARM_CLIENT_SECRET }} --tenant ${{ secrets.ARM_TENANT_ID }}
+    # - name: AZ Login
+    #   run: |
+    #     az login --service-principal -u ${{ secrets.ARM_CLIENT_ID }} -p ${{ secrets.ARM_CLIENT_SECRET }} --tenant ${{ secrets.ARM_TENANT_ID }}
 
-    - name: Setear subscripción
-      run: |
-        az account set --subscription ${{ secrets.ARM_SUBSCRIPTION_ID }}
+    # - name: Setear subscripción
+    #   run: |
+    #     az account set --subscription ${{ secrets.ARM_SUBSCRIPTION_ID }}
 
-    - name: AKS credentials
-      run: |
-        az aks get-credentials --resource-group final-project-common --name aksbootcampwe01 --overwrite-existing
+    # - name: AKS credentials
+    #   run: |
+    #     az aks get-credentials --resource-group final-project-common --name aksbootcampwe01 --overwrite-existing
 
-    - name: Kubelogin
-      run: |
-        kubelogin convert-kubeconfig -l azurecli
+    # - name: Kubelogin
+    #   run: |
+    #     kubelogin convert-kubeconfig -l azurecli
       
-    - name: ACR login
+    # - name: ACR login
+    #   run: |
+    #     az acr login --name acajascr.azurecr.io
+
+    - name: Instalar IBM CLI
+        run: |
+          curl -fsSL https://clis.cloud.ibm.com/install/linux | sh
+
+    - name: IBM Cloud Login
       run: |
-        az acr login --name acajascr.azurecr.io
+        ibmcloud login --apikey ${{ screts.APIKEY_IBM_ACAJAS }} -r eu-gb
+        ibmcloud target -g Stemdo_Sandbox
+
+    - name: Instalar plugin Container Service
+      run: |
+        ibmcloud plugin install container-service
+
+    - name: Login cluster
+      run: |
+        ibmcloud oc cluster config -c ez-ibm-openshift-vpc --admin
+
+    - name: Crear namespace
+      run: |
+        if ! oc get ns acajas > /dev/null 2>&1; then
+          oc create ns acajas
+        fi
       
     - name: Crear secreto con las credenciales
       run: |
-        if ! kubectl get secrets acr-secret -n ns-acajas > /dev/null 2>&1; then
-          kubectl create secret docker-registry acr-secret --docker-server=acajascr.azurecr.io \
-          --docker-username=${{ secrets.ARM_CLIENT_ID }} --docker-password=${{ secrets.ARM_CLIENT_SECRET }} \
-          -n ns-acajas
+        if ! oc get secret ibmcloud-registry-secret -n acajas > /dev/null 2>&1; then
+          oc create secret docker-registry ibmcloud-registry-secret \
+          --docker-server=icr.io \
+          --docker-username=iamapikey \
+          --docker-password=${{ screts.APIKEY_IBM_ACAJAS }} \
+          -n acajas
         fi
 
     - name: Crear secreto para la conexión con la base de datos
       run: |
-        if ! kubectl get secrets secretos-backend -n ns-acajas > /dev/null 2>&1 && [[ "${{ inputs.desarrollo }}" == *"backend"* ]]; then
-          kubectl create secret generic secretos-backend --from-literal=SPRING_DB_HOST=${{vars.SPRING_DB_HOST}} \
+        if ! oc get secrets secretos-backend -n ns-acajas > /dev/null 2>&1 && [[ "${{ inputs.desarrollo }}" == *"backend"* ]]; then
+          oc create secret generic secretos-backend --from-literal=SPRING_DB_HOST=${{vars.SPRING_DB_HOST}} \
           --from-literal=SPRING_DB_PORT=${{vars.SPRING_DB_PORT}} --from-literal=SPRING_DB_NAME=${{secrets.SPRING_DB_NAME}} \
-          --from-literal=SPRING_DB_USER=${{secrets.SPRING_DB_USER}} --from-literal=SPRING_DB_PASSWORD=${{secrets.SPRING_DB_PASSWORD}} -n ns-acajas
+          --from-literal=SPRING_DB_USER=${{secrets.SPRING_DB_USER}} --from-literal=SPRING_DB_PASSWORD=${{secrets.SPRING_DB_PASSWORD}} -n acajas
         fi
 
     - name: Instalar Helm
@@ -83,32 +108,37 @@ jobs:
     #     helm upgrade --install ${{ inputs.desarrollo }} oci://harbor.codeops.es/acajas/${{ inputs.desarrollo }} -f values.yml -n ns-acajas
     #   working-directory: templates
 
-    - name: Login Azure Container Registry
-      uses: docker/login-action@v3
-      with:
-        registry: acajascr.azurecr.io
-        username: ${{ secrets.ARM_CLIENT_ID }}
-        password: ${{ secrets.ARM_CLIENT_SECRET }}
+    # - name: Login Azure Container Registry
+    #   uses: docker/login-action@v3
+    #   with:
+    #     registry: acajascr.azurecr.io
+    #     username: ${{ secrets.ARM_CLIENT_ID }}
+    #     password: ${{ secrets.ARM_CLIENT_SECRET }}
+
+    - name: Login en IBM Container Registry
+      run: |
+        ibmcloud cr region-set global
+        ibmcloud cr login
 
     - name: Instalar chart
       run: |
         if [[ "${{ inputs.desarrollo }}" == "backend-development" ]]; then
-          helm upgrade --install ${{ inputs.desarrollo }} oci://acajascr.azurecr.io/acajas/backend -f values-dev.yml -n ns-acajas
+          helm upgrade --install ${{ inputs.desarrollo }} oci://icr.io/acajas-cr/acajas/backend -f values-dev.yml -n ns-acajas
         elif [[ "${{ inputs.desarrollo }}" == "backend-production" ]]; then
-          helm upgrade --install ${{ inputs.desarrollo }} oci://acajascr.azurecr.io/acajas/backend -f values-prod.yml -n ns-acajas
+          helm upgrade --install ${{ inputs.desarrollo }} oci://icr.io/acajas-cr/acajas/backend -f values-prod.yml -n ns-acajas
         fi
 
         if [[ "${{ inputs.desarrollo }}" == "frontend-development" ]]; then
-          helm upgrade --install ${{ inputs.desarrollo }} oci://acajascr.azurecr.io/acajas/frontend -f values-dev.yml -n ns-acajas
+          helm upgrade --install ${{ inputs.desarrollo }} oci://icr.io/acajas-cr/acajas/frontend -f values-dev.yml -n ns-acajas
         elif [[ "${{ inputs.desarrollo }}" == "frontend-production" ]]; then
-          helm upgrade --install ${{ inputs.desarrollo }} oci://acajascr.azurecr.io/acajas/frontend -f values-prod.yml -n ns-acajas
+          helm upgrade --install ${{ inputs.desarrollo }} oci://icr.io/acajas-cr/acajas/frontend -f values-prod.yml -n ns-acajas
         fi
       working-directory: templates
 
-    - name: Instalar ingress
-      run: |
-        if [[ "${{ inputs.desarrollo }}" == *"frontend"* ]]; then 
-          kubectl apply -f ingress.yml -n ns-acajas
-          kubectl get ingress
-        fi
-      working-directory: templates
+    # - name: Instalar ingress
+    #   run: |
+    #     if [[ "${{ inputs.desarrollo }}" == *"frontend"* ]]; then 
+    #       kubectl apply -f ingress.yml -n ns-acajas
+    #       kubectl get ingress
+    #     fi
+    #   working-directory: templates
