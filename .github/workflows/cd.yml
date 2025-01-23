@@ -80,7 +80,7 @@ jobs:
           oc create secret docker-registry ibmcloud-registry-secret \
           --docker-server=icr.io \
           --docker-username=iamapikey \
-          --docker-password=${{ screts.APIKEY_IBM_ACAJAS }} \
+          --docker-password=${{ secrets.APIKEY_IBM_ACAJAS }} \
           -n acajas
         fi
 
