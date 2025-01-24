@@ -134,15 +134,9 @@ jobs:
 
         if [[ "${{ inputs.desarrollo }}" == "frontend-development" ]]; then
           helm upgrade --install ${{ inputs.desarrollo }} oci://icr.io/acajas-cr/acajas/frontend -f values-dev.yml -n acajas
+          kubectl apply -f route-dev.yml
         elif [[ "${{ inputs.desarrollo }}" == "frontend-production" ]]; then
           helm upgrade --install ${{ inputs.desarrollo }} oci://icr.io/acajas-cr/acajas/frontend -f values-prod.yml -n acajas
+          kubectl apply -f route-prod.yml
         fi
       working-directory: templates
-
-    # - name: Instalar ingress
-    #   run: |
-    #     if [[ "${{ inputs.desarrollo }}" == *"frontend"* ]]; then 
-    #       kubectl apply -f ingress.yml -n ns-acajas
-    #       kubectl get ingress
-    #     fi
-    #   working-directory: templates
