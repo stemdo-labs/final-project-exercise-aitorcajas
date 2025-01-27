@@ -23,7 +23,7 @@ jobs:
     run: |
      if [[ "${GITHUB_REF}" == "refs/heads/main" ]]; then
       echo "environment=production" >> $GITHUB_OUTPUT
-     elif [[ "${GITHUB_REF}" == "refs/heads/develop" ]]; then
+     else
       echo "environment=development" >> $GITHUB_OUTPUT
      fi
 
