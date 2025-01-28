@@ -3,10 +3,12 @@ name: Definir entornos
 on:
  workflow_call:
   outputs:
-   entorno:
-    value: ${{ jobs.environment.outputs.environment }}
-   desarrollo:
-    value: ${{ jobs.environment.outputs.desarrollo }}
+    entorno:
+      value: ${{ jobs.environment.outputs.environment }}
+    desarrollo:
+      value: ${{ jobs.environment.outputs.desarrollo }}
+    rama:
+      value: ${{ jobs.environment.outputs.rama }}
 
 jobs:
  environment:
@@ -14,6 +16,7 @@ jobs:
   outputs:
    environment: ${{ steps.set_environment.outputs.environment }}
    desarrollo: ${{ steps.desarrollo.outputs.app_desarrollo }}
+   rama: ${{ steps.set_environment.outputs.rama }}
   steps:
   - name: Checkout del repositorio
     uses: actions/checkout@v3
@@ -21,11 +24,13 @@ jobs:
   - name: Definir entorno
     id: set_environment
     run: |
-     if [[ "${GITHUB_REF}" == "refs/heads/main" ]]; then
-      echo "environment=production" >> $GITHUB_OUTPUT
-     else
-      echo "environment=development" >> $GITHUB_OUTPUT
-     fi
+      branch_name="${GITHUB_REF##*/}"
+      if [[ "$branch_name" == "refs/heads/main" ]]; then
+        echo "environment=production" >> $GITHUB_OUTPUT
+      else
+        echo "environment=development" >> $GITHUB_OUTPUT
+      fi
+      echo "rama=$branch_name" >> $GITHUB_OUTPUT
 
   - name: Extraer desarrollo
     id: desarrollo
