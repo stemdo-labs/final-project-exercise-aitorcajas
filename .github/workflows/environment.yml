@@ -16,21 +16,26 @@ jobs:
   outputs:
    environment: ${{ steps.set_environment.outputs.environment }}
    desarrollo: ${{ steps.desarrollo.outputs.app_desarrollo }}
-   rama: ${{ steps.set_environment.outputs.rama }}
+   rama: ${{ steps.branch.outputs.rama }}
   steps:
   - name: Checkout del repositorio
     uses: actions/checkout@v3
 
+  - name: Definir rama
+    id: branch
+    run: |
+      branch_name="${GITHUB_REF##*/}"
+      echo "La rama es $branch_name"
+      echo "rama=$branch_name" >> $GITHUB_OUTPUT
+
   - name: Definir entorno
     id: set_environment
     run: |
-      branch_name="${GITHUB_REF##*/}"
-      if [[ "$branch_name" == "refs/heads/main" ]]; then
+      if [[ "${{ steps.branch.outputs.rama }}" == "main" ]]; then
         echo "environment=production" >> $GITHUB_OUTPUT
       else
         echo "environment=development" >> $GITHUB_OUTPUT
       fi
-      echo "rama=$branch_name" >> $GITHUB_OUTPUT
 
   - name: Extraer desarrollo
     id: desarrollo
