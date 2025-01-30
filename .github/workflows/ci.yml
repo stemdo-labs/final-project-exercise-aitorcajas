@@ -67,7 +67,7 @@ jobs:
 
       - name: Cargar el nombre de la imagen
         id: cargar_imagen
-        uses: stemdo-labs/final-project-exercise-aitorcajas/.github/actions/action-image@develop
+        uses: stemdo-labs/final-project-exercise-aitorcajas/.github/actions/action-image@main
         with:
           version: ${{ inputs.version }}
           desarrollo: ${{ inputs.desarrollo }}
