@@ -9,11 +9,16 @@ on:
       entorno:
         type: string
         required: true
+    outputs:
+      route_host:
+        value: ${{ jobs.cd.outputs.route_host }}
     
 jobs:
   cd:
     runs-on: ubuntu-latest
     environment: ${{ inputs.entorno }}
+    outputs:
+      route_host: ${{ steps.chart.outputs.route_host }}
     steps:
     - name: Checkout del repositorio
       uses: actions/checkout@v3
@@ -125,6 +130,7 @@ jobs:
         ibmcloud cr login
 
     - name: Instalar chart
+      id: chart
       run: |
         if [[ "${{ inputs.desarrollo }}" == "backend-development" ]]; then
           helm upgrade --install ${{ inputs.desarrollo }} oci://icr.io/acajas-cr/acajas/backend -f values-dev.yml -n acajas
@@ -135,8 +141,10 @@ jobs:
         if [[ "${{ inputs.desarrollo }}" == "frontend-development" ]]; then
           helm upgrade --install ${{ inputs.desarrollo }} oci://icr.io/acajas-cr/acajas/frontend -f values-dev.yml -n acajas
           kubectl apply -f route-dev.yml
+          echo "route_host=$(oc get route frontend-dev -n acajas -o jsonpath='{.spec.host}')" >> $GITHUB_OUTPUT
         elif [[ "${{ inputs.desarrollo }}" == "frontend-production" ]]; then
           helm upgrade --install ${{ inputs.desarrollo }} oci://icr.io/acajas-cr/acajas/frontend -f values-prod.yml -n acajas
           kubectl apply -f route-prod.yml
+          echo "route_host=$(oc get route frontend-prod -n acajas -o jsonpath='{.spec.host}')" >> $GITHUB_OUTPUT
         fi
       working-directory: templates
