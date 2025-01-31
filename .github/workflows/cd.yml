@@ -148,3 +148,7 @@ jobs:
           echo "route_host=$(oc get route frontend-prod -n acajas -o jsonpath='{.spec.host}')" >> $GITHUB_OUTPUT
         fi
       working-directory: templates
+
+    - name: Mostrar
+      run: |
+        echo "${{ steps.chart.outputs.route_host }}"
