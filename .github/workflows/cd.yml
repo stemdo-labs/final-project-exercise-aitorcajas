@@ -141,11 +141,11 @@ jobs:
         if [[ "${{ inputs.desarrollo }}" == "frontend-development" ]]; then
           helm upgrade --install ${{ inputs.desarrollo }} oci://icr.io/acajas-cr/acajas/frontend -f values-dev.yml -n acajas
           kubectl apply -f route-dev.yml
-          echo "route_host=$(oc get route frontend-dev -n acajas -o jsonpath='{.spec.host}')" >> $GITHUB_OUTPUT
+          echo "route_host=$(kubectl get route frontend-dev -n acajas -o jsonpath='{.spec.host}')" >> $GITHUB_OUTPUT
         elif [[ "${{ inputs.desarrollo }}" == "frontend-production" ]]; then
           helm upgrade --install ${{ inputs.desarrollo }} oci://icr.io/acajas-cr/acajas/frontend -f values-prod.yml -n acajas
           kubectl apply -f route-prod.yml
-          echo "route_host=$(oc get route frontend-prod -n acajas -o jsonpath='{.spec.host}')" >> $GITHUB_OUTPUT
+          echo "route_host=$(kubectl get route frontend-prod -n acajas -o jsonpath='{.spec.host}')" >> $GITHUB_OUTPUT
         fi
       working-directory: templates
 
