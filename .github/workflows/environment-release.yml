@@ -31,7 +31,7 @@ jobs:
   - name: Definir entorno
     id: set_environment
     run: |
-      if [[ "${{ steps.branch.outputs.rama }}" == "*prod*" ]]; then
+      if [[ "${{ steps.branch.outputs.rama }}" == *prod* ]]; then
         echo "environment=production" >> $GITHUB_OUTPUT
       else
         echo "environment=development" >> $GITHUB_OUTPUT
