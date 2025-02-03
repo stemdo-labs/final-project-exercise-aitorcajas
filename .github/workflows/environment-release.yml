@@ -10,7 +10,7 @@ on:
     rama:
       value: ${{ jobs.environment.outputs.rama }}
     entorno_release:
-      values: ${{ jobs.environment.outputs.entorno_release }}
+      value: ${{ jobs.environment.outputs.entorno_release }}
 
 jobs:
  environment:
